@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,31 +12,15 @@ import com.badlogic.gdx.utils.ScreenUtils;
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
  */
-public class Main extends ApplicationAdapter {
-    private SpriteBatch batch; //para poder acceder a las imagenes
-    private BitmapFont font; //caracteres por pantalla
-    private int height;
+public class Main extends Game {
 
+    public SpriteBatch batch;
+    public Pantalla coche;
+    public Pantalla animacion;
     @Override
     public void create() {
-        batch = new SpriteBatch();
-        font = new BitmapFont();
-        height = Gdx.graphics.getHeight(); // nos develve la altura máxima del juego
-
-    }
-
-    @Override
-    public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-
-        font.draw(batch, "Hola Mundo", 10, height-10);
-        batch.end();
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
-
+        batch= new SpriteBatch();
+        coche= new PantallaCoche(this);
+        setScreen(coche);
     }
 }
