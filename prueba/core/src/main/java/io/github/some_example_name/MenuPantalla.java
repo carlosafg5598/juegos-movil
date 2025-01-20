@@ -1,22 +1,22 @@
 package io.github.some_example_name;
 
-public class PantallaCoche extends Pantalla{
-    public PantallaCoche(Main juego) {
+public class MenuPantalla extends Pantalla{
+    public MenuPantalla(Main juego) {
         super(juego);
     }
 
     @Override
+    public void draw(float delta) {
+
+    }
+
+    @Override
+    public void update(float delta) {
+
+    }
+
+    @Override
     public void show() {
-
-    }
-
-    @Override
-    public void render(float delta) {
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
 
     }
 
