@@ -12,15 +12,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class PlayScreen implements Screen {
     private Main game;
-    Texture texture;
+    private Hud hud;
     private OrthographicCamera gameCam;
     private Viewport gamePort;
 
     public PlayScreen(Main game) {
         this.game = game;
-        texture = new Texture("libgdx.png");
+        hud = new Hud(game.batch);
         gameCam = new OrthographicCamera();
-        gamePort = new FitViewport(Main.V_WIDTH,Main.V_HEIGHT,gameCam);
+        gamePort = new FitViewport(Main.V_WIDTH, Main.V_HEIGHT, gameCam);
+
     }
 
     @Override
@@ -30,17 +31,15 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 0, 0, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.setProjectionMatrix(gameCam.combined);
-        game.batch.begin();
-        game.batch.draw(texture, 0, 0);
-        game.batch.end();
+        game.batch.setProjectionMatrix(hud.stage.getCamera().combined);
+        hud.stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        gamePort.update(width,height);
+        gamePort.update(width, height);
     }
 
     @Override
