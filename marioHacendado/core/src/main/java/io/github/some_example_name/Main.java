@@ -18,7 +18,7 @@ public class Main extends Game {
 
 
     @Override
-    public void create() {//TODO: VIDEO MARIO, VER 5 VIDEO EN CASA PARA HACER MAPA, VAMOS POR EL SEXTO
+    public void create() {//TODO: VIDEO MARIO, ver video 6 otra vez, buscar mapa hecho por el y probar
         batch = new SpriteBatch();
         setScreen(new PlayScreen(this));
     }
