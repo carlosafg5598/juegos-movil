@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="200" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="Character_and_objects.tsx"/>
+ <tileset firstgid="649" source="tilemap_packed.tsx"/>
+ <layer id="1" name="fondo" width="10" height="200">
+  <data encoding="base64" compression="zlib">
+   eJzt2cVRgwEAhNGfHnDpA03QLiAQQpA+cOkDlz5w6QOXG48ZzuHAdQ/v9M1sAztYFMUQJcoMM8IoY4wzwQxVZqkxR515FlhkiWVWWGWNdTbYZIttdthlj30OOOSIY0445YxzLrjkimtuuOWOex545IlnXnjljXc++OSL5qaiaKGVNtrpoJMuuumhlz76GWCQIUqUGWaESaaoMM0MVWapMUf9dyMiIiIiIiIiIiIiIiIiIv5WaeDng27U/+MbvxjvZg==
+  </data>
+ </layer>
+ <layer id="2" name="objetosInmobiles" width="10" height="200">
+  <data encoding="base64" compression="zlib">
+   eJztzcENgCAQRFGWG/YivWgBVGXB0IGb4Mm8Seb2k1eK7eyI96atpie6czV3oruCy+VyuVwul8vlcrlcLpfL5XK5XC6Xy+Vy/+uOj//U3CdIAlHy
+  </data>
+ </layer>
+</map>
