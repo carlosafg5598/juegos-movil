@@ -52,11 +52,9 @@ public class MenuDeJuego implements Screen {
         batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
         for (int i = 0; i < menuOptions.length; i++) {
-            if (i == selectedOption) {
-                font.setColor(1, 1, 0, 1); // Amarillo si está seleccionado
-            } else {
-                font.setColor(1, 1, 1, 1); // Blanco normal
-            }
+            
+            font.setColor(1, 1, 1, 1); // Blanco normal
+
             font.draw(batch, menuOptions[i], WORLD_WIDTH / 20, WORLD_HEIGHT / 3 - i * 8);
         }
         batch.end();
@@ -74,8 +72,10 @@ public class MenuDeJuego implements Screen {
 
     }
 
+    private boolean touchHandled = false;  // Bandera para evitar toques múltiples
+
     private void handleTouchInput() {
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() && !touchHandled) {
             float touchX = Gdx.input.getX(); // Coordenada X del toque
             float touchY = Gdx.input.getY(); // Coordenada Y del toque
 
@@ -90,13 +90,17 @@ public class MenuDeJuego implements Screen {
                 // Verifica si el toque está dentro de los límites de la opción
                 if (touchCoords.y > optionBottom && touchCoords.y < optionTop) {
                     selectedOption = i;
-                    if (Gdx.input.isTouched()) {
-                        handleSelection(); // Ejecuta la acción de la opción seleccionada
-                    }
+                    handleSelection(); // Ejecuta la acción de la opción seleccionada
+                    break;  // Salir del bucle una vez que se haya procesado el toque
                 }
             }
+
+            touchHandled = true;  // Marcar el toque como procesado
+        } else if (!Gdx.input.isTouched()) {
+            touchHandled = false;  // Restablecer la bandera cuando el toque se haya soltado
         }
     }
+
 
     private void handleSelection() {
         switch (selectedOption) {

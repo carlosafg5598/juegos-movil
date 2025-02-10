@@ -56,30 +56,23 @@ public class MenuScreen implements Screen {
         batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
         for (int i = 0; i < menuOptions.length; i++) {
-            if (i == selectedOption) {
-                font.setColor(1, 1, 0, 1); // Amarillo si está seleccionado
-            } else {
-                font.setColor(1, 1, 1, 1); // Blanco normal
-            }
+
+            font.setColor(1, 1, 1, 1); // Blanco normal
+
             font.draw(batch, menuOptions[i], WORLD_WIDTH / 15, WORLD_HEIGHT / 4 - i * 10);
         }
+
         batch.end();
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-//            selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
-//        }
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-//            selectedOption = (selectedOption + 1) % menuOptions.length;
-//        }
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-//            handleSelection();
-//        }
+
         handleTouchInput();
 
     }
 
+    private boolean touchHandled = false;  // Bandera para evitar toques múltiples
+
     private void handleTouchInput() {
         // Detectar si el usuario está tocando la pantalla o haciendo clic con el mouse
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() && !touchHandled) {
             // Obtener las coordenadas del toque (o clic en el escritorio)
             float touchX = Gdx.input.getX();
             float touchY = Gdx.input.getY();
@@ -95,13 +88,17 @@ public class MenuScreen implements Screen {
                 // Comprobar si el toque está dentro de los límites de la opción
                 if (touchCoords.y > optionBottom && touchCoords.y < optionTop) {
                     selectedOption = i;
-                    if (Gdx.input.isTouched()) {
-                        handleSelection(); // Ejecutar la selección
-                    }
+                    handleSelection(); // Ejecutar la selección
+                    break;  // Salir del bucle una vez que se haya procesado el toque
                 }
             }
+
+            touchHandled = true;  // Marcar el toque como procesado
+        } else if (!Gdx.input.isTouched()) {
+            touchHandled = false;  // Restablecer la bandera cuando el toque se haya soltado
         }
     }
+
 
     private void handleSelection() {
         switch (selectedOption) {
