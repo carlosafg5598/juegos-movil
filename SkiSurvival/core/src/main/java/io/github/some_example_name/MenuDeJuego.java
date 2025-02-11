@@ -52,21 +52,13 @@ public class MenuDeJuego implements Screen {
         batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
         for (int i = 0; i < menuOptions.length; i++) {
-            
+
             font.setColor(1, 1, 1, 1); // Blanco normal
 
             font.draw(batch, menuOptions[i], WORLD_WIDTH / 20, WORLD_HEIGHT / 3 - i * 8);
         }
         batch.end();
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-//            selectedOption = (selectedOption - 1 + menuOptions.length) % menuOptions.length;
-//        }
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-//            selectedOption = (selectedOption + 1) % menuOptions.length;
-//        }
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-//            handleSelection();
-//        }
+
 
         handleTouchInput();
 

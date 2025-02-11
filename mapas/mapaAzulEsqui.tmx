@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="200" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="58">
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="200" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="59">
  <tileset firstgid="1" source="Character_and_objects.tsx"/>
  <tileset firstgid="649" source="tilemap_packed.tsx"/>
  <tileset firstgid="781" source="snow_green.tsx"/>
  <tileset firstgid="797" source="snow_blue.tsx"/>
  <tileset firstgid="813" source="snow_black.tsx"/>
+ <tileset firstgid="829" source="DALL·E 2025-02-10 10.25.40 - A cartoon-style finish line flag design for a racing game or platformer game. The flag is 16x16 in size, with classic black and white checkered square.tsx"/>
  <layer id="1" name="fondo" width="10" height="200">
   <data encoding="base64" compression="zlib">
-   eJzt2cVNRAEUhtFHpgVcEkIVyCjSBQyjSB+49IFLH7j0gcuO8wLsCIT9XZzV/fI3cLNJkuTIU6BIiVHGGGeCClVq1GnQZIZZ5phngUWWWGaFVdZYZ4NNtthmh1322OeAQ4445oRTzjjngkuuuOaGW+6454FHnnjmhVfeeKe1JUnaaKeDTrropode+hhkiGFGyJIjT4EiJSaZosw0FarUqNOgmW5mPnd+05+JLrrooosuuuiiiy666KKLLrrooosuuuiiiy666KKLLrrooosu7dIf7E8Gvm5/dd/+030AvYTGpg==
+   eJztzMVNhAEUhdGfTAgUgEtCGcgo0sUAo0gf2CB94NIHLn3gsuNMCEsmYf8WJ3fz5aaTJMmQJUeeApNMMc0MJcpUqFKjzgKLLLHMCqussc4GDTbZYpsddtljnwMOOeKYE04545wLLrnimhtuueOeBx554pkXXnnjnQ8++aKrLUm66aGXPvoZYJAhhhlljHEmSJMhS448BYrMMsc8JcpUqFKj3vxM/fy0MpKKLrrooosuuuiiiy666KKLLrrooosuuuiiiy666KKLLrrooouu2TU6kqSz/e/97Vo1zf3P3zd2FsVU
   </data>
  </layer>
  <layer id="2" name="objetosInmobiles" width="10" height="200">
   <data encoding="base64" compression="zlib">
-   eJztmMsNwyAMhhNy7waVOkdmqXrrPLn0xk6ZIMM0OUSirg0OGHBQLHH7BI75/Qhdd1mKPfsw816Z+xDmHoMcNxkeZ5nc2Mdxmx8czhLcZlJxWcwvNwbujsO5cfZx3Di753K5xRO7mP1cw+4P47D7y/W9NTksHrP553LqGfpAcdCHGvGTrkPYuZT+NehlN615RNVnyFF6XjLWtVjuTPmRymnVFWWwHlC5m7NfHuGo/JgNLz9y++daC7o/m54pDtN1aL8JmSMws0yOey7GpfaF3P6V4DTdB+VbiLNMTsI/SjOQwzSjcY7gci3UXdfgf3LMfhJ1XOL/vAaXWjdS8ohzbk0Ozk27ae37JfqgRL7l5Er0Qe3zhu+N7eozevNXmtOu0yNcyrtZiXe9mpwWPVP9MrRfSzqFpu2/rOV57UzcbV2vnl4752Nc7mP8a+O+uRl23g==
+   eJztmMENwyAMRQlR1S5RqXNkg+7Qa+fJANkpE2SYNodI1LXBAQMOii+5PBnHfNuAMael2KsLM+8vc+/D3KOX40bL4yYmN3Rx3BoHh5sIbjWpvCz2lxsCe8fh3Dz7OG6e3XW53OLJXYw/17D9wzhs/3L9b00Oy8ds/7mceoYxUByMoUb+pPsQti6lfw162UxrHVH9GXKUnpeMfS2WO1J9pHJadUUZ7AdU7eacl3s4qj5my6uP3PG51oLuj6ZnisN0HfI3IucIzCYmx10X41LnQu74SnCa9oOKLcRNTE4iPkozkMM0o/EcweVa6LuuwXtyjD+JPi5xP6/BpfaNlDrirFuTg+emzbTO/RJzUKLecnIl5qD284bvje2cM3rrV5rTrtM9XMq7WYl3vZqcFj1T8zLkryWdQtN2L2v5vHYk7nk15nahvxvnY9bvHn8fnlRw6A==
   </data>
  </layer>
  <objectgroup id="3" name="Capa de Objetos 1">
@@ -67,5 +68,6 @@
   <object id="54" x="112.125" y="2192.58" width="16" height="15.625"/>
   <object id="55" x="31.4583" y="2367.25" width="16" height="15.625"/>
   <object id="56" x="47.7917" y="2656.58" width="16" height="15.625"/>
+  <object id="58" x="15.6667" y="3152" width="128.333" height="48.3333"/>
  </objectgroup>
 </map>

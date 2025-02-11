@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="150" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="27">
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="150" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="28">
  <tileset firstgid="1" source="Character_and_objects.tsx"/>
  <tileset firstgid="649" source="snow_green.tsx"/>
  <tileset firstgid="665" source="tilemap_packed.tsx"/>
+ <tileset firstgid="797" source="DALL·E 2025-02-10 10.25.40 - A cartoon-style finish line flag design for a racing game or platformer game. The flag is 16x16 in size, with classic black and white checkered square.tsx"/>
  <layer id="1" name="fondo" width="10" height="150">
   <data encoding="base64" compression="zlib">
-   eJztzUcyA2AYgOFfzoCo9xBSlVsgXbmHFuIeermHiHoPvew8M/b2Zr7Fs3tn3nxKqUCREmUqzDLHPAvUqNOgSYs2K6yyxjobbLLFNjt02GWPLvsccMgRx5xwyhnnXHDJFT2u6XPDLXfc88AjTzzzwitvvPPBJ198MziQ0hDDZBlhlDHGmWCSKXJMM0OeAkVKlKmwyBLLVKlRp0GTFm06md/nX7qZ6KKLLrrooosuuuiiiy666KKLLrrooosuuuj+a/cDRMIrmA==
+   eJztzcVNhAEUhdGfCQkN4NIHMop0gYzC0Ac2MPSBSx+4VEADuOw4hLBkEhKWb3FyN1/eSydJkiFLjjwFxplgkimKlChToUqNeRaos8gSy6ywyhoN1tmgySZbbLPDLnvsc8AhRxxzwilnnHPBJVdcc8Mt9zzwyBPPvPDKG+980NmWJF1000MvffQzwCBDDDPCKGOkyZAlR54C08wwyxxFSpSpUKVGI/X9s5VmKrrooosuuuiiiy666KKLLrrooosuuuiiiy66/+jqHUly1/77/nStmq/9y71PnQM5eA==
   </data>
  </layer>
  <layer id="2" name="objetosInmobiles" width="10" height="150">
   <data encoding="base64" compression="zlib">
-   eJztl8kNwCAMBBH995AC0hMVpIj8UZAsItZee+ftB4wvaE1k5Oq2uNsYh2AEOguaB3h3xtoQ3yiXNlae5r6r7skL1Oyv2C+nd0tFpzvIkx/s7pHvQySIvFT6V0Sq86w1ywLCf6R680IOzsPo+M/e0ezMyQuSURr5
+   eJxjYBgFwxHMZyJO3Woi1dED3BtEbqE3eENHvw/FtDEKsIPRuCQO4Aon9Hw30sNpoAC9yv6RmF9oXbeMxDAlB4yG08CBoR729Gwf0hPQI15GUr9iMKXz4ZpmhwqgR/gPpvQ2UGA0DGgPhmIYU1LvjJad9AGPWfDTxKohVi0AKm4lzQ==
   </data>
  </layer>
  <objectgroup id="3" name="Capa de Objetos 1">
@@ -38,5 +39,6 @@
   <object id="23" x="48.25" y="1824.38" width="16.125" height="16"/>
   <object id="24" x="111.75" y="2176.13" width="16.125" height="16"/>
   <object id="25" x="31.5" y="2207.88" width="16.125" height="16"/>
+  <object id="27" x="17.5" y="2352.5" width="126" height="46"/>
  </objectgroup>
 </map>
