@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.1" orientation="orthogonal" renderorder="right-down" width="10" height="300" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="89">
+ <tileset firstgid="1" source="Character_and_objects.tsx"/>
+ <tileset firstgid="649" source="snow_red.tsx"/>
+ <tileset firstgid="665" source="tilemap_packed.tsx"/>
+ <tileset firstgid="797" source="DALL·E 2025-02-10 10.25.40 - A cartoon-style finish line flag design for a racing game or platformer game. The flag is 16x16 in size, with classic black and white checkered square.tsx"/>
+ <layer id="1" name="fondo" width="10" height="300">
+  <data encoding="base64" compression="zlib">
+   eJztzEdOglEAReEnMXEDin0foFTLLqT8FJV9CIriPqyo+7CXfdjLzGOMQ0icMTiDL3dyclMhhDQyyCKHPBawiCUso4wIFVRRQx2rWMM6GthAEy1sYgttbGMHHexiD/s4wCGOcIwuTnCKM5zjApe4wjVucIs73OMBj3jCM17wije84wOf+MLoUAhjiGMcE5jEFKYxg1kkkMQc5pFCGhlkkUMeKyigiBLKiFBBFTXU0Y79fvXTidnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZDUbXGAkhGu69f12/5mf/8/cN2RWIAA==
+  </data>
+ </layer>
+ <layer id="2" name="objetosInmobiles" width="10" height="300">
+  <data encoding="base64" compression="zlib">
+   eJztmjsOwjAQRC2ExDnpuBX0cCYOgDgEoohkocTxb9dvQl6TxnJmZtd2EiWEHVWuh7xx98xxNbwN5yb4i6HpWYKm07JHrPHM8rUwB62evYh9pXrE29c/5J3CspetUK2ZtW7rvdcrd+9+WqPFt2qvplA44+d6SLUWFN0UHbm06qXtQ7XQ6kbT04PaXiFnQdE2Yh328N5LN6EO8Zn/bLiPhxdCXiQdKX57lKaZpqcX1r5oudH0xND3sxJumfd5NOihPRcTajBaw9w7Oa1ONYzOdcJjXY1kbg+kZF/CrllfBwG1LNT0lkDwZvXNm+BtDdrZR8mM/nxFySkXWp/VopZ7KVv1p+ZLYb1QM6Xq8sC6bxSzHXmWt+ZF/B/jcgrhfFy+TqTGfK8l830ABQht8Q==
+  </data>
+ </layer>
+ <objectgroup id="3" name="Capa de Objetos 1">
+  <object id="1" x="16" y="175.875" width="15.75" height="31.25"/>
+  <object id="2" x="112.25" y="256.375" width="15.75" height="31.25"/>
+  <object id="3" x="47.75" y="319.375" width="15.75" height="31.25"/>
+  <object id="4" x="80" y="384.125" width="15.75" height="31.25"/>
+  <object id="5" x="128" y="512.125" width="15.75" height="31.25"/>
+  <object id="6" x="16.5" y="575.625" width="15.75" height="31.25"/>
+  <object id="7" x="79.75" y="655.875" width="15.75" height="31.25"/>
+  <object id="8" x="48.5" y="720.375" width="15.75" height="31.25"/>
+  <object id="9" x="111.5" y="800.125" width="15.75" height="31.25"/>
+  <object id="10" x="31.75" y="895.375" width="15.75" height="31.25"/>
+  <object id="11" x="128.25" y="959.875" width="15.75" height="31.25"/>
+  <object id="12" x="96" y="1038.88" width="15.75" height="31.25"/>
+  <object id="13" x="127.5" y="1135.88" width="15.75" height="31.25"/>
+  <object id="14" x="47.75" y="1167.88" width="15.75" height="31.25"/>
+  <object id="15" x="31.75" y="1328.38" width="15.75" height="31.25"/>
+  <object id="16" x="128" y="1391.13" width="15.75" height="31.25"/>
+  <object id="17" x="32.25" y="1455.13" width="15.75" height="31.25"/>
+  <object id="18" x="96" y="1520.38" width="15.75" height="31.25"/>
+  <object id="19" x="31.75" y="1630.88" width="15.75" height="31.25"/>
+  <object id="20" x="128.25" y="1680.38" width="15.75" height="31.25"/>
+  <object id="21" x="79.75" y="1791.88" width="15.75" height="31.25"/>
+  <object id="22" x="64" y="1855.13" width="15.75" height="31.25"/>
+  <object id="23" x="112" y="1951.88" width="15.75" height="31.25"/>
+  <object id="24" x="31.75" y="2015.63" width="15.75" height="31.25"/>
+  <object id="25" x="48.25" y="2096.38" width="15.75" height="31.25"/>
+  <object id="26" x="128.25" y="2127.88" width="15.75" height="31.25"/>
+  <object id="27" x="32" y="2191.38" width="15.75" height="31.25"/>
+  <object id="28" x="111.5" y="2255.63" width="15.75" height="31.25"/>
+  <object id="29" x="48" y="2319.38" width="15.75" height="31.25"/>
+  <object id="30" x="111.75" y="2400.63" width="15.75" height="31.25"/>
+  <object id="31" x="15" y="2448.38" width="15.75" height="31.25"/>
+  <object id="32" x="112.5" y="2495.63" width="15.75" height="31.25"/>
+  <object id="33" x="15.75" y="2591.88" width="15.75" height="31.25"/>
+  <object id="34" x="112.25" y="2640.38" width="15.75" height="31.25"/>
+  <object id="35" x="127.5" y="2735.88" width="15.75" height="31.25"/>
+  <object id="36" x="15.5" y="2799.38" width="15.75" height="31.25"/>
+  <object id="37" x="111.75" y="2927.63" width="15.75" height="31.25"/>
+  <object id="38" x="16" y="2991.38" width="15.75" height="31.25"/>
+  <object id="39" x="31.5" y="3088.13" width="15.75" height="31.25"/>
+  <object id="40" x="112.25" y="3152.13" width="15.75" height="31.25"/>
+  <object id="41" x="31.75" y="3231.63" width="15.75" height="31.25"/>
+  <object id="42" x="96.25" y="3280.38" width="15.75" height="31.25"/>
+  <object id="43" x="48.75" y="3391.13" width="15.75" height="31.25"/>
+  <object id="44" x="112" y="3455.88" width="15.75" height="31.25"/>
+  <object id="45" x="32.5" y="3552.13" width="15.75" height="31.25"/>
+  <object id="47" x="111.75" y="3631.63" width="15.75" height="31.25"/>
+  <object id="48" x="64.5" y="3759.88" width="15.75" height="31.25"/>
+  <object id="49" x="127.75" y="3872.13" width="15.75" height="31.25"/>
+  <object id="50" x="32.75" y="3951.38" width="15.75" height="31.25"/>
+  <object id="51" x="32" y="4031.13" width="15.75" height="31.25"/>
+  <object id="52" x="127.75" y="4111.88" width="15.75" height="31.25"/>
+  <object id="53" x="32.25" y="4208.13" width="15.75" height="31.25"/>
+  <object id="54" x="95.75" y="4271.88" width="15.75" height="31.25"/>
+  <object id="55" x="112.25" y="4335.63" width="15.75" height="31.25"/>
+  <object id="56" x="79.25" y="4399.63" width="15.75" height="31.25"/>
+  <object id="57" x="128" y="4496.38" width="15.75" height="31.25"/>
+  <object id="58" x="31.5" y="4543.88" width="15.75" height="31.25"/>
+  <object id="59" x="127" y="4655.63" width="15.75" height="31.25"/>
+  <object id="61" x="64.25" y="223.75" width="16" height="16.25"/>
+  <object id="62" x="15.25" y="448.25" width="16" height="16.25"/>
+  <object id="63" x="80.25" y="559.25" width="16" height="16.25"/>
+  <object id="64" x="128" y="655.5" width="16" height="16.25"/>
+  <object id="65" x="63.5" y="848.25" width="16" height="16.25"/>
+  <object id="66" x="32" y="1008.5" width="16" height="16.25"/>
+  <object id="67" x="32.5" y="1087.25" width="16" height="16.25"/>
+  <object id="68" x="96" y="1247.5" width="16" height="16.25"/>
+  <object id="69" x="111.75" y="1311" width="16" height="16.25"/>
+  <object id="70" x="32.25" y="1551.75" width="16" height="16.25"/>
+  <object id="71" x="15.75" y="1776" width="16" height="16.25"/>
+  <object id="72" x="127.5" y="1903.75" width="16" height="16.25"/>
+  <object id="73" x="63.5" y="1984" width="16" height="16.25"/>
+  <object id="74" x="128.75" y="2064.25" width="16" height="16.25"/>
+  <object id="75" x="79.5" y="2064" width="16" height="16.25"/>
+  <object id="76" x="47.75" y="2257" width="16" height="16.25"/>
+  <object id="77" x="95.75" y="2560.5" width="16" height="16.25"/>
+  <object id="78" x="32.5" y="2687.5" width="16" height="16.25"/>
+  <object id="79" x="48.25" y="2848" width="16" height="16.25"/>
+  <object id="80" x="127.5" y="2847.75" width="16" height="16.25"/>
+  <object id="81" x="112.5" y="3072.5" width="16" height="16.25"/>
+  <object id="82" x="79.5" y="3600" width="16" height="16.25"/>
+  <object id="83" x="127.75" y="3808.25" width="16" height="16.25"/>
+  <object id="84" x="111.75" y="4607.75" width="16" height="16.25"/>
+  <object id="85" x="111.75" y="4607.75" width="16" height="16.25"/>
+  <object id="86" x="64.25" y="4687.5" width="16" height="16.25"/>
+  <object id="88" x="16.5" y="4752" width="127.5" height="46.5"/>
+ </objectgroup>
+</map>

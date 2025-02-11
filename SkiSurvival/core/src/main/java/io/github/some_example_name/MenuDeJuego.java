@@ -97,6 +97,7 @@ public class MenuDeJuego implements Screen {
     private void handleSelection() {
         switch (selectedOption) {
             case 0: // Verde
+                game.setScreen(new GameScreen(game));
                 System.out.println("Opcion Verde");
                 //game.setScreen(new GameScreen(game));//hay que cambiar cuando tenga el juego
                 break;
