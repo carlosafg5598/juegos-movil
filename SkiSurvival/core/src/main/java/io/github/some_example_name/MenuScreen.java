@@ -1,152 +1,133 @@
 package io.github.some_example_name;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import org.w3c.dom.Text;
-
-import java.nio.channels.spi.SelectorProvider;
 
 public class MenuScreen implements Screen {
 
     private final Main game;
-    GameScreen gameScreen;
-    MenuDeJuego menuDeJuego;
     private Camera camera;
     private Viewport viewport;
-    private SpriteBatch batch;
     private Texture background;
     private int backgroundOffset;
     private BitmapFont font;
-    private int selectedOption = 0;
+    private int selectedOption = -1;
     private final String[] menuOptions = {"Jugar", "Opciones", "Salir"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
+    private Rectangle[] menuBounds;
+    private boolean touchHandled = false;
+    private boolean transitioning = false;
+    private float touchCooldown = 0.3f;
+
     MenuScreen(Main game) {
-        this.game=game;
+        this.game = game;
         camera = new OrthographicCamera();
-        viewport = new StretchViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         background = new Texture("static_snow.png");
         backgroundOffset = 0;
-        batch = new SpriteBatch();
+        game.batch = new SpriteBatch();
         font = new BitmapFont();
-        font.getData().setScale(0.4f); // Reduce el tamaño a la mitad
+        font.getData().setScale(0.3f);
 
+        menuBounds = new Rectangle[menuOptions.length];
+        for (int i = 0; i < menuOptions.length; i++) {
+            float optionX = WORLD_WIDTH / 15;
+            float optionY = WORLD_HEIGHT / 2 + 20 - i * 12;
+            menuBounds[i] = new Rectangle(optionX, optionY - 5, 60, 10);
+        }
     }
-
 
     @Override
     public void render(float delta) {
-        batch.begin();
+        if (touchCooldown > 0) {
+            touchCooldown -= delta;
+        }
+
+        game.batch.begin();
         backgroundOffset++;
         if (backgroundOffset % WORLD_HEIGHT == 0) {
             backgroundOffset = 0;
         }
-        batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
-        batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+        game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
+        game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+
         for (int i = 0; i < menuOptions.length; i++) {
-
-            font.setColor(1, 1, 1, 1); // Blanco normal
-
-            font.draw(batch, menuOptions[i], WORLD_WIDTH / 15, WORLD_HEIGHT / 4 - i * 10);
+            font.setColor(0, 0, 0, 1);
+            font.draw(game.batch, menuOptions[i], menuBounds[i].x, menuBounds[i].y);
         }
-
-        batch.end();
-
+        game.batch.end();
         handleTouchInput();
-
     }
-
-    private boolean touchHandled = false;  // Bandera para evitar toques múltiples
 
     private void handleTouchInput() {
-        // Detectar si el usuario está tocando la pantalla o haciendo clic con el mouse
+        if (transitioning || touchCooldown > 0) return;
+
         if (Gdx.input.isTouched() && !touchHandled) {
-            // Obtener las coordenadas del toque (o clic en el escritorio)
             float touchX = Gdx.input.getX();
             float touchY = Gdx.input.getY();
-
-            // Convertir las coordenadas del toque a las coordenadas del mundo
             camera.unproject(touchCoords.set(touchX, touchY, 0));
 
-            // Verificar si el toque o clic está dentro de alguna de las opciones del menú
-            for (int i = 0; i < menuOptions.length; i++) {
-                float optionTop = WORLD_HEIGHT / 4 - i * 10;
-                float optionBottom = optionTop - 10; // Espacio entre opciones
-
-                // Comprobar si el toque está dentro de los límites de la opción
-                if (touchCoords.y > optionBottom && touchCoords.y < optionTop) {
-                    selectedOption = i;
-                    handleSelection(); // Ejecutar la selección
-                    break;  // Salir del bucle una vez que se haya procesado el toque
+            for (int i = 0; i < menuBounds.length; i++) {
+                if (menuBounds[i].contains(touchCoords.x, touchCoords.y)) {
+                    if (selectedOption != i) {
+                        selectedOption = i;
+                        handleSelection();
+                    }
+                    break;
                 }
             }
-
-            touchHandled = true;  // Marcar el toque como procesado
+            touchHandled = true;
         } else if (!Gdx.input.isTouched()) {
-            touchHandled = false;  // Restablecer la bandera cuando el toque se haya soltado
+            touchHandled = false;
+            selectedOption = -1;
         }
     }
 
-
     private void handleSelection() {
-        switch (selectedOption) {
-            case 0: // Jugar
-                //gameScreen = new GameScreen(game);
-                //game.setScreen(new GameScreen(game));
-                game.setScreen(new MenuDeJuego(game));
-
-                break;
-            case 1: // Opciones
-                System.out.println("Opciones seleccionadas");
-                break;
-            case 2: // Salir
-                Gdx.app.exit();
-                break;
-        }
+        transitioning = true;
+        Gdx.app.postRunnable(() -> {
+            switch (selectedOption) {
+                case 0:
+                    game.setScreen(new MenuDeJuego(game));
+                    break;
+                case 1:
+                    System.out.println("Opciones seleccionadas");
+                    transitioning = false;
+                    break;
+                case 2:
+                    Gdx.app.exit();
+                    break;
+            }
+        });
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(camera.combined);
     }
 
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        batch.dispose();
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {
+        game.batch.dispose();
         background.dispose();
         font.dispose();
     }
-
-    @Override
-    public void show() {
-
+    @Override public void show() {
+        touchCooldown = 0.3f;
     }
 }

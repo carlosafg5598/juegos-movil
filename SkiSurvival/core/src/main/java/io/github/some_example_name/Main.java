@@ -14,12 +14,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 public class Main extends Game {
 
     MenuScreen menuScreen;
+    public SpriteBatch batch;
 
 
     @Override
     public void create() {
-//        gameScreen= new GameScreen();
-//        setScreen(gameScreen);
+        batch= new SpriteBatch();
         menuScreen = new MenuScreen(this);
         setScreen(menuScreen);
 
