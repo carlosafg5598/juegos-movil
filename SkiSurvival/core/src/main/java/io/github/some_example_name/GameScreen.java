@@ -58,7 +58,7 @@ public class GameScreen extends InputAdapter implements Screen {
         map = mapLoader.load("mapas/EsquiVerde.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        camera.position.set(viewport.getScreenWidth() / 2, viewport.getScreenHeight() / 2, 0);
+        camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         world = new World(new Vector2(0, 0), true);
         b2dr = new Box2DDebugRenderer();
         BodyDef bodyDef = new BodyDef();
@@ -85,6 +85,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     public void update(float dt) {
         handleInput(dt);
+        world.step(1/60f,6,2);
         camera.update();
         renderer.setView((OrthographicCamera) camera);
     }
