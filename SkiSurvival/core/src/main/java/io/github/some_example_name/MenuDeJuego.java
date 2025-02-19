@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MenuDeJuego implements Screen {
@@ -23,14 +22,14 @@ public class MenuDeJuego implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"Verde (Fácil)", "Azul (Normal)", "Rojo (Difícil)", "Negro (Imposible)", "Salir"};
+    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ", "S a l i r"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
     private Rectangle[] menuBounds;
     private boolean touchHandled = false;
     private boolean transitioning = false;
-    private float touchCooldown = 0.3f; // Tiempo de espera antes de detectar toques
+    private float touchCooldown = 0.3f;
 
     MenuDeJuego(Main game) {
         this.game = game;
@@ -40,13 +39,16 @@ public class MenuDeJuego implements Screen {
         backgroundOffset = 0;
         game.batch = new SpriteBatch();
         font = new BitmapFont();
-        font.getData().setScale(0.3f);
 
+        // 📌 **Reducimos el tamaño del texto**
+        font.getData().setScale(0.2f); // Antes era 0.3f, ahora más pequeño
+
+        // 📌 **Creamos los botones más pequeños**
         menuBounds = new Rectangle[menuOptions.length];
         for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 20;
-            float optionY = WORLD_HEIGHT / 2 + 20 - i * 12;
-            menuBounds[i] = new Rectangle(optionX, optionY - 5, 60, 10);
+            float optionX = WORLD_WIDTH / 4; // Centramos más los botones
+            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustamos el espaciado
+            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // Botones más pequeños
         }
     }
 
@@ -55,10 +57,12 @@ public class MenuDeJuego implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         if (touchCooldown > 0) {
-            touchCooldown -= delta; // Reducir tiempo de espera
+            touchCooldown -= delta;
         }
 
         game.batch.begin();
+
+        // 📌 **Dibujamos el fondo correctamente**
         backgroundOffset++;
         if (backgroundOffset % WORLD_HEIGHT == 0) {
             backgroundOffset = 0;
@@ -66,10 +70,16 @@ public class MenuDeJuego implements Screen {
         game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
 
+        // 📌 **Dibujamos el texto dentro del botón de forma más centrada**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
-            font.draw(game.batch, menuOptions[i], menuBounds[i].x, menuBounds[i].y);
+
+            // 📌 **Ajustamos el texto para que esté dentro del botón**
+            float textX = menuBounds[i].x + menuBounds[i].width / 6; // Centrar horizontalmente
+            float textY = menuBounds[i].y + menuBounds[i].height / 2 + 2; // Centrar verticalmente
+            font.draw(game.batch, menuOptions[i], textX, textY);
         }
+
         game.batch.end();
         handleTouchInput();
     }
@@ -130,27 +140,15 @@ public class MenuDeJuego implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
     }
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void dispose() {
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {
         game.batch.dispose();
         background.dispose();
         font.dispose();
     }
-
-    @Override
-    public void show() {
-        touchCooldown = 0.3f; // Restablecer tiempo de espera al entrar al menú
+    @Override public void show() {
+        touchCooldown = 0.3f;
     }
 }

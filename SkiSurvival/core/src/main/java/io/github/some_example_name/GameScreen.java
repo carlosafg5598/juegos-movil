@@ -29,6 +29,7 @@ import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
 import Sprites.Esquiador;
+
 public class GameScreen extends InputAdapter implements Screen {
 
     private final Main game;
@@ -88,7 +89,10 @@ public class GameScreen extends InputAdapter implements Screen {
             @Override
             public void beginContact(Contact contact) {
                 System.out.println("¡Colisión detectada!");
+                game.setScreen(new GameOverScreen(game, "GameScreen"));
+                // Cambiar a la pantalla de Game Over
             }
+
 
             @Override
             public void endContact(Contact contact) {
@@ -108,22 +112,21 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
 
-
     public void handleInput(float dt) {
         float screenWidth = Gdx.graphics.getWidth(); // Ancho de la pantalla
         float screenHeight = Gdx.graphics.getHeight(); // Altura de la pantalla
         if (Gdx.input.isTouched()) {
 
             camera.position.y -= 100 * dt;
-            int screenX= Gdx.input.getX();
-            int screenY=Gdx.input.getY();
+            int screenX = Gdx.input.getX();
+            int screenY = Gdx.input.getY();
 
             if (screenX > screenWidth / 2) {
                 // Movimiento a la derecha (agregar velocidad positiva en el eje X)
-                esquiador.move(20, esquiador.body.getLinearVelocity().y);  // Movimiento constante hacia la derecha
+                esquiador.move(100, esquiador.body.getLinearVelocity().y);  // Movimiento constante hacia la derecha
             } else {
                 // Movimiento a la izquierda (agregar velocidad negativa en el eje X)
-                esquiador.move(-20, esquiador.body.getLinearVelocity().y);  // Movimiento constante hacia la izquierda
+                esquiador.move(-100, esquiador.body.getLinearVelocity().y);  // Movimiento constante hacia la izquierda
             }
         }
     }
@@ -156,13 +159,16 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     @Override
-    public void pause() {}
+    public void pause() {
+    }
 
     @Override
-    public void resume() {}
+    public void resume() {
+    }
 
     @Override
-    public void hide() {}
+    public void hide() {
+    }
 
     @Override
     public void dispose() {
@@ -171,5 +177,6 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+    }
 }

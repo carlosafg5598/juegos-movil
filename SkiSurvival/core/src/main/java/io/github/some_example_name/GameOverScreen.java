@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MenuScreen implements Screen {
+public class GameOverScreen implements Screen {
 
     private final Main game;
     private Camera camera;
@@ -22,7 +22,7 @@ public class MenuScreen implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
+    private final String[] menuOptions = {"V o l v e r  a  J u g a r ", "M e n u  D e  J u e g o", "S a l i r "};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -30,9 +30,11 @@ public class MenuScreen implements Screen {
     private boolean touchHandled = false;
     private boolean transitioning = false;
     private float touchCooldown = 0.3f;
+    private String previousScreen;
 
-    MenuScreen(Main game) {
+    GameOverScreen(Main game, String previousScreen) {
         this.game = game;
+        this.previousScreen = previousScreen;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         background = new Texture("static_snow.png");
@@ -110,17 +112,27 @@ public class MenuScreen implements Screen {
     private void handleSelection() {
         transitioning = true;
         Gdx.app.postRunnable(() -> {
-            switch (selectedOption) {
-                case 0:
-                    game.setScreen(new MenuDeJuego(game));
-                    break;
-                case 1:
-                    System.out.println("Opciones seleccionadas");
-                    transitioning = false;
-                    break;
-                case 2:
-                    Gdx.app.exit();
-                    break;
+            if (selectedOption == 0) { // Volver a jugar
+                switch (previousScreen) {
+                    case "GameScreen":
+                        game.setScreen(new GameScreen(game));
+                        break;
+                    case "BlueScreen":
+                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                        break;
+                    case "RedScreen":
+                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                        break;
+                    case "Black" +
+                             "Screen":
+                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                        break;
+
+                }
+            } else if (selectedOption == 1) { // Volver al menú
+                game.setScreen(new MenuDeJuego(game));
+            } else if (selectedOption == 2) { // Salir del juego
+                Gdx.app.exit();
             }
         });
     }
@@ -131,15 +143,27 @@ public class MenuScreen implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
     }
 
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
-    @Override public void dispose() {
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
         game.batch.dispose();
         background.dispose();
         font.dispose();
     }
-    @Override public void show() {
+
+    @Override
+    public void show() {
         touchCooldown = 0.3f;
     }
 }
