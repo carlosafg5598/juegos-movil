@@ -22,7 +22,7 @@ public class GameOverScreen implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"V o l v e r  a  J u g a r ", "M e n u  D e  J u e g o", "S a l i r "};
+    private final String[] menuOptions = {"V o l v e r  a  J u g a r ", "M e n u  D e  J u e g o", "S a l i r  D e l  J u e g o"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -31,10 +31,14 @@ public class GameOverScreen implements Screen {
     private boolean transitioning = false;
     private float touchCooldown = 0.3f;
     private String previousScreen;
+    private String resultado;
+    private float r, g, b; // Variables para cambiar el color del título
 
-    GameOverScreen(Main game, String previousScreen) {
+
+    GameOverScreen(Main game, String previousScreen, String resultado) {
         this.game = game;
         this.previousScreen = previousScreen;
+        this.resultado = resultado;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         background = new Texture("static_snow.png");
@@ -44,6 +48,18 @@ public class GameOverScreen implements Screen {
 
         // 🔹 **Reducir tamaño del texto**
         font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        if ("VICTORIA".equals(resultado)) {
+            resultado = "VICTORIA";
+            r = 0;
+            g = 1;
+            b = 0; // Verde
+        } else {
+            resultado = "DERROTA";
+            r = 1;
+            g = 0;
+            b = 0; // Rojo
+        }
+
 
         menuBounds = new Rectangle[menuOptions.length];
         for (int i = 0; i < menuOptions.length; i++) {
@@ -60,6 +76,8 @@ public class GameOverScreen implements Screen {
         if (touchCooldown > 0) {
             touchCooldown -= delta;
         }
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
 
         game.batch.begin();
 
@@ -70,6 +88,9 @@ public class GameOverScreen implements Screen {
         }
         game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+
+        font.setColor(r, g, b, 1); // Rojo para derrota, verde para victoria
+        font.draw(game.batch, resultado, WORLD_WIDTH / 3.5f, WORLD_HEIGHT - 10);
 
         // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
         for (int i = 0; i < menuOptions.length; i++) {
@@ -118,14 +139,13 @@ public class GameOverScreen implements Screen {
                         game.setScreen(new GameScreen(game));
                         break;
                     case "BlueScreen":
-                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                        game.setScreen(new BlueScreen(game));
                         break;
                     case "RedScreen":
-                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                        game.setScreen(new RedScreen(game));
                         break;
-                    case "Black" +
-                             "Screen":
-                        game.setScreen(new GameScreen(game));//TODO CAMBIAR SCREEN CUANDO TENGA LOS MAPAS CREADOS
+                    case "BlackScreen":
+                        game.setScreen(new BlackScreen(game));
                         break;
 
                 }
@@ -140,7 +160,7 @@ public class GameOverScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        game.batch.setProjectionMatrix(camera.combined);
+
     }
 
     @Override
@@ -166,4 +186,5 @@ public class GameOverScreen implements Screen {
     public void show() {
         touchCooldown = 0.3f;
     }
+
 }

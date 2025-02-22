@@ -3,7 +3,6 @@ package io.github.some_example_name;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,8 +30,7 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 
 import Sprites.Esquiador;
 
-public class GameScreen extends InputAdapter implements Screen {
-
+public class BlackScreen extends InputAdapter implements Screen {
     private final Main game;
     private Camera camera;
     private Viewport viewport;
@@ -53,14 +51,10 @@ public class GameScreen extends InputAdapter implements Screen {
     private float startX;
     private float startY;
 
-
-
-
-    GameScreen(Main game) {
+    BlackScreen(Main game) {
         this.game = game;
-
-        startX=150;
-        startY=1550;
+        startX = 150;
+        startY = 15950;
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -68,7 +62,7 @@ public class GameScreen extends InputAdapter implements Screen {
         font = new BitmapFont();
 
         mapLoader = new TmxMapLoader();
-        map = mapLoader.load("mapas/EsquiVerde.tmx");
+        map = mapLoader.load("mapas/EsquiNegro.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
@@ -76,7 +70,7 @@ public class GameScreen extends InputAdapter implements Screen {
         b2dr = new Box2DDebugRenderer();
 
         // Crear el esquiador
-        esquiador = new Esquiador(world,startX,startY);
+        esquiador = new Esquiador(world, startX, startY);
 
         // Crear los objetos de la capa de obstáculos
         createObstacles();
@@ -90,12 +84,10 @@ public class GameScreen extends InputAdapter implements Screen {
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
                     System.out.println("¡Colisión con un obstáculo! Has perdido.");
-                    game.reproducirDerrota();
-                    game.setScreen(new GameOverScreen(game, "GameScreen", "DERROTA"));
+                    game.setScreen(new GameOverScreen(game, "BlackScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
                     System.out.println("¡Has llegado a la meta! Has ganado.");
-                    game.reproducirVictoria();
-                    game.setScreen(new GameOverScreen(game, "GameScreen", "VICTORIA"));
+                    game.setScreen(new GameOverScreen(game, "BlackScreen", "VICTORIA"));
                 }
             }
 
@@ -116,7 +108,6 @@ public class GameScreen extends InputAdapter implements Screen {
         });
     }
 
-    // Crear obstáculos estáticos (si están definidos en el mapa)
     private void createObstacles() {
         BodyDef bodyDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
@@ -143,7 +134,6 @@ public class GameScreen extends InputAdapter implements Screen {
         }
     }
 
-    // Manejo de la entrada del usuario (mover el esquiador)
     public void handleInput(float dt) {
         float screenWidth = Gdx.graphics.getWidth(); // Ancho de la pantalla
 
@@ -158,8 +148,6 @@ public class GameScreen extends InputAdapter implements Screen {
             }
         }
     }
-
-    // Actualizar la lógica del juego
     public void update(float dt) {
         handleInput(dt);
         world.step(1 / 60f, 6, 2);
@@ -175,6 +163,11 @@ public class GameScreen extends InputAdapter implements Screen {
     }
 
     @Override
+    public void show() {
+
+    }
+
+    @Override
     public void render(float delta) {
         update(delta);
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -186,12 +179,25 @@ public class GameScreen extends InputAdapter implements Screen {
         game.batch.setProjectionMatrix(camera.combined);
         esquiador.render(game.batch); // Dibujar esquiador animado
         game.batch.end();
-
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
 
     }
 
@@ -200,21 +206,5 @@ public class GameScreen extends InputAdapter implements Screen {
         game.batch.dispose();
         font.dispose();
         esquiador.dispose();
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
     }
 }

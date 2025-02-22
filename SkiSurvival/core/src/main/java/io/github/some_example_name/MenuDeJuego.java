@@ -22,7 +22,7 @@ public class MenuDeJuego implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ", "S a l i r"};
+    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ", "A t r a s"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -116,16 +116,13 @@ public class MenuDeJuego implements Screen {
                     game.setScreen(new GameScreen(game));
                     break;
                 case 1:
-                    System.out.println("Opción Azul");
-                    transitioning = false;
+                    game.setScreen(new BlueScreen(game));
                     break;
                 case 2:
-                    System.out.println("Opción Rojo");
-                    transitioning = false;
+                    game.setScreen(new RedScreen(game));
                     break;
                 case 3:
-                    System.out.println("Opción Negro");
-                    transitioning = false;
+                    game.setScreen(new BlackScreen(game));
                     break;
                 case 4:
                     game.setScreen(new MenuScreen(game));
