@@ -16,3 +16,7 @@ https://www.youtube.com/watch?v=WRS9SC0i0oc&list=PLZm85UZQLd2SXQzsF-a0-pPF6IWDDd
 
 tutorial
 https://multimedia.codeandcoke.com/apuntes:libgdx
+
+
+sprites2
+https://www.spriters-resource.com/sega_genesis_32x/winterolympics/sheet/27377/

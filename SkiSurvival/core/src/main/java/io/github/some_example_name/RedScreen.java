@@ -38,8 +38,8 @@ public class RedScreen extends InputAdapter implements Screen{
     private OrthogonalTiledMapRenderer renderer;
 
     private BitmapFont font;
-    private final float WORLD_WIDTH = 350;
-    private final float WORLD_HEIGHT = 400;
+    private final float WORLD_WIDTH = 500;
+    private final float WORLD_HEIGHT = 800;
 
     // Box2D Variables
     private World world;
@@ -83,9 +83,11 @@ public class RedScreen extends InputAdapter implements Screen{
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
                     System.out.println("¡Colisión con un obstáculo! Has perdido.");
+                    game.reproducirDerrota();
                     game.setScreen(new GameOverScreen(game, "RedScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
                     System.out.println("¡Has llegado a la meta! Has ganado.");
+                    game.reproducirVictoria();
                     game.setScreen(new GameOverScreen(game, "RedScreen", "VICTORIA"));
                 }
             }
