@@ -83,7 +83,8 @@ public class BlackScreen extends InputAdapter implements Screen {
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
-                    System.out.println("¡Colisión con un obstáculo! Has perdido.");
+
+                    Gdx.input.vibrate(250, 100, true);
                     game.reproducirDerrota();
                     game.setScreen(new GameOverScreen(game, "BlackScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
@@ -150,15 +151,41 @@ public class BlackScreen extends InputAdapter implements Screen {
             }
         }
     }
+    // Actualizar la lógica del juego
     public void update(float dt) {
         handleInput(dt);
         world.step(1 / 60f, 6, 2);
 
         esquiador.update(dt);
-        System.out.println("Esquiador X: " + esquiador.body.getPosition().x + ", Esquiador Y: " + esquiador.body.getPosition().y);
 
-        // Actualizar la posición de la cámara para que siga al esquiador
-        camera.position.set(esquiador.body.getPosition().x, esquiador.body.getPosition().y, 0);
+        // Obtener las dimensiones del mapa
+        float mapWidth = map.getProperties().get("width", Integer.class) * map.getProperties().get("tilewidth", Integer.class);
+        float mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+
+        // Calcular la posición de la cámara en función de la posición del esquiador
+        float cameraX = esquiador.body.getPosition().x;
+        float cameraY = esquiador.body.getPosition().y - 350;
+
+        // Limitar la posición de la cámara para que no se salga de los límites del mapa
+        float cameraHalfWidth = camera.viewportWidth / 2;
+        float cameraHalfHeight = camera.viewportHeight / 2;
+
+//        // Limitar la cámara en el eje X
+//        if (cameraX - cameraHalfWidth < 0) {
+//            cameraX = cameraHalfWidth; // No permite que la cámara se mueva fuera del mapa por la izquierda
+//        } else if (cameraX + cameraHalfWidth > mapWidth) {
+//            cameraX = mapWidth - cameraHalfWidth; // No permite que la cámara se mueva fuera del mapa por la derecha
+//        }
+
+        // Limitar la cámara en el eje Y
+        if (cameraY - cameraHalfHeight < 0) {
+            cameraY = cameraHalfHeight; // No permite que la cámara se mueva fuera del mapa por abajo
+        } else if (cameraY + cameraHalfHeight > mapHeight) {
+            cameraY = mapHeight - cameraHalfHeight; // No permite que la cámara se mueva fuera del mapa por arriba
+        }
+
+        // Actualizar la posición de la cámara
+        camera.position.set(startX, cameraY, 0);
         camera.update();
 
         renderer.setView((OrthographicCamera) camera);

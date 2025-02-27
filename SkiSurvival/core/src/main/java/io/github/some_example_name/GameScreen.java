@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
@@ -71,7 +72,7 @@ public class GameScreen extends InputAdapter implements Screen {
         map = mapLoader.load("mapas/EsquiVerde.tmx");
         renderer = new OrthogonalTiledMapRenderer(map);
 
-        camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
+        //camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         world = new World(new Vector2(0, -9.8f), true); // Gravedad hacia abajo
         b2dr = new Box2DDebugRenderer();
 
@@ -91,6 +92,8 @@ public class GameScreen extends InputAdapter implements Screen {
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
 
                     game.reproducirDerrota();
+                    Gdx.input.vibrate(250, 100, true);
+
                     game.setScreen(new GameOverScreen(game, "GameScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
 
@@ -164,15 +167,34 @@ public class GameScreen extends InputAdapter implements Screen {
         handleInput(dt);
         world.step(1 / 60f, 6, 2);
 
-        esquiador.update(dt);
-        System.out.println("Esquiador X: " + esquiador.body.getPosition().x + ", Esquiador Y: " + esquiador.body.getPosition().y);
 
-        // Actualizar la posición de la cámara para que siga al esquiador
-        camera.position.set(esquiador.body.getPosition().x, esquiador.body.getPosition().y, 0);
+        esquiador.update(dt);
+
+        // Obtener las dimensiones del mapa
+
+        float mapHeight = map.getProperties().get("height", Integer.class) * map.getProperties().get("tileheight", Integer.class);
+
+        float cameraY = esquiador.body.getPosition().y - 350;
+
+
+        float cameraHalfHeight = camera.viewportHeight / 2;
+
+
+
+        // Limitar la cámara en el eje Y
+        if (cameraY - cameraHalfHeight < 0) {
+            cameraY = cameraHalfHeight; // No permite que la cámara se mueva fuera del mapa por abajo
+        } else if (cameraY + cameraHalfHeight > mapHeight) {
+            cameraY = mapHeight - cameraHalfHeight; // No permite que la cámara se mueva fuera del mapa por arriba
+        }
+
+        // Actualizar la posición de la cámara
+        camera.position.set(startX, cameraY, 0);
         camera.update();
 
         renderer.setView((OrthographicCamera) camera);
     }
+
 
     @Override
     public void render(float delta) {

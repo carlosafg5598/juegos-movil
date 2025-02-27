@@ -13,8 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class MenuScreen implements Screen {
-
+public class opcionScreen implements Screen {
     private final Main game;
     private Camera camera;
     private Viewport viewport;
@@ -22,7 +21,7 @@ public class MenuScreen implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
+    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ","M a p a  F i n a l" ,"A t r a s"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -31,7 +30,7 @@ public class MenuScreen implements Screen {
     private boolean transitioning = false;
     private float touchCooldown = 0.3f;
 
-    MenuScreen(Main game) {
+    opcionScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -40,14 +39,15 @@ public class MenuScreen implements Screen {
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
-        // 🔹 **Reducir tamaño del texto**
-        font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        // 📌 **Reducimos el tamaño del texto**
+        font.getData().setScale(0.2f); // Antes era 0.3f, ahora más pequeño
 
+        // 📌 **Creamos los botones más pequeños**
         menuBounds = new Rectangle[menuOptions.length];
         for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 4;   // Centrar más los botones
-            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustar espacio entre botones
-            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // 🔹 **Hacer los botones más pequeños**
+            float optionX = WORLD_WIDTH / 4; // Centramos más los botones
+            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustamos el espaciado
+            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // Botones más pequeños
         }
     }
 
@@ -61,7 +61,7 @@ public class MenuScreen implements Screen {
 
         game.batch.begin();
 
-        // 🔹 **Dibujar el fondo correctamente**
+        // 📌 **Dibujamos el fondo correctamente**
         backgroundOffset++;
         if (backgroundOffset % WORLD_HEIGHT == 0) {
             backgroundOffset = 0;
@@ -69,13 +69,13 @@ public class MenuScreen implements Screen {
         game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
 
-        // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
+        // 📌 **Dibujamos el texto dentro del botón de forma más centrada**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
 
-            // 🔹 **Ajuste dinámico del texto según el botón**
-            float textX = menuBounds[i].x + menuBounds[i].width / 4; // Centrar horizontalmente
-            float textY = menuBounds[i].y + menuBounds[i].height / 2; // Centrar verticalmente
+            // 📌 **Ajustamos el texto para que esté dentro del botón**
+            float textX = menuBounds[i].x + menuBounds[i].width / 6; // Centrar horizontalmente
+            float textY = menuBounds[i].y + menuBounds[i].height / 2 + 2; // Centrar verticalmente
             font.draw(game.batch, menuOptions[i], textX, textY);
         }
 
@@ -112,13 +112,22 @@ public class MenuScreen implements Screen {
         Gdx.app.postRunnable(() -> {
             switch (selectedOption) {
                 case 0:
-                    game.setScreen(new MenuDeJuego(game));
+                    game.setScreen(new GameScreen(game));
                     break;
                 case 1:
-                    game.setScreen(new opcionScreen(game));
+                    game.setScreen(new BlueScreen(game));
                     break;
                 case 2:
-                    Gdx.app.exit();
+                    game.setScreen(new RedScreen(game));
+                    break;
+                case 3:
+                    game.setScreen(new BlackScreen(game));
+                    break;
+                case 4:
+                    game.setScreen(new FinalMapScreen(game));
+                    break;
+                case 5:
+                    game.setScreen(new MenuScreen(game));
                     break;
             }
         });
