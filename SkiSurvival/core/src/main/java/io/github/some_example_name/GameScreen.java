@@ -59,7 +59,7 @@ public class GameScreen extends InputAdapter implements Screen {
 
     GameScreen(Main game) {
         this.game = game;
-
+        game.reproducirJuego();
         startX=150;
         startY=1550;
 

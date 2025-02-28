@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -18,136 +21,103 @@ public class opcionScreen implements Screen {
     private Camera camera;
     private Viewport viewport;
     private Texture background;
-    private int backgroundOffset;
-    private BitmapFont font;
-    private int selectedOption = -1;
-    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ","M a p a  F i n a l" ,"A t r a s"};
-    private final int WORLD_WIDTH = 72;
-    private final int WORLD_HEIGHT = 128;
-    private Vector3 touchCoords = new Vector3();
-    private Rectangle[] menuBounds;
-    private boolean touchHandled = false;
-    private boolean transitioning = false;
-    private float touchCooldown = 0.3f;
+    private Stage stage;
+    private float musicVolume = 1.0f;
+    private float soundVolume = 1.0f;
+    private boolean vibrationEnabled = true;
 
-    opcionScreen(Main game) {
+    public opcionScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight() ,camera);
         background = new Texture("static_snow.png");
-        backgroundOffset = 0;
-        game.batch = new SpriteBatch();
-        font = new BitmapFont();
+        stage = new Stage(viewport, game.batch);
+        Gdx.input.setInputProcessor(stage);
 
-        // 📌 **Reducimos el tamaño del texto**
-        font.getData().setScale(0.2f); // Antes era 0.3f, ahora más pequeño
+        // Crear UI
+        createUI();
+    }
 
-        // 📌 **Creamos los botones más pequeños**
-        menuBounds = new Rectangle[menuOptions.length];
-        for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 4; // Centramos más los botones
-            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustamos el espaciado
-            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // Botones más pequeños
-        }
+    private void createUI() {
+        Table table = new Table();
+        table.setFillParent(true);
+        stage.addActor(table);
+
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); // Puedes reemplazarlo si no tienes un Skin
+
+        Label musicLabel = new Label("Volumen Música", skin);
+        Slider musicSlider = new Slider(0, 1, 0.1f, false, skin);
+        musicSlider.setValue(musicVolume);
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                musicVolume = musicSlider.getValue();
+                game.setMusicVolume(musicVolume);
+            }
+        });
+
+        Label soundLabel = new Label("Volumen Sonido", skin);
+        Slider soundSlider = new Slider(0, 1, 0.1f, false, skin);
+        soundSlider.setValue(soundVolume);
+        soundSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                soundVolume = soundSlider.getValue();
+                game.setSoundVolume(soundVolume);
+            }
+        });
+
+        TextButton vibrationButton = new TextButton("Vibración: ON", skin);
+        vibrationButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                vibrationEnabled = !vibrationEnabled;
+                vibrationButton.setText("Vibración: " + (vibrationEnabled ? "ON" : "OFF"));
+                game.setVibrationEnabled(vibrationEnabled);
+            }
+        });
+
+        TextButton backButton = new TextButton("Atrás", skin);
+        backButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                game.setScreen(new MenuScreen(game));
+            }
+        });
+        // Ajustar el tamaño de los elementos según la resolución de la pantalla
+        float buttonWidth = Gdx.graphics.getWidth() * 0.4f;
+        float sliderWidth = Gdx.graphics.getWidth() * 0.6f;
+
+        // Organizar los elementos en la tabla
+        table.add(musicLabel).pad(5);
+        table.row();
+        table.add(musicSlider).width(sliderWidth).pad(5);
+        table.row();
+        table.add(soundLabel).pad(5);
+        table.row();
+        table.add(soundSlider).width(sliderWidth).pad(5);
+        table.row();
+        table.add(vibrationButton).width(buttonWidth).pad(10);
+        table.row();
+        table.add(backButton).width(buttonWidth).pad(10);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (touchCooldown > 0) {
-            touchCooldown -= delta;
-        }
-
         game.batch.begin();
-
-        // 📌 **Dibujamos el fondo correctamente**
-        backgroundOffset++;
-        if (backgroundOffset % WORLD_HEIGHT == 0) {
-            backgroundOffset = 0;
-        }
-        game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
-        game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
-
-        // 📌 **Dibujamos el texto dentro del botón de forma más centrada**
-        for (int i = 0; i < menuOptions.length; i++) {
-            font.setColor(0, 0, 0, 1);
-
-            // 📌 **Ajustamos el texto para que esté dentro del botón**
-            float textX = menuBounds[i].x + menuBounds[i].width / 6; // Centrar horizontalmente
-            float textY = menuBounds[i].y + menuBounds[i].height / 2 + 2; // Centrar verticalmente
-            font.draw(game.batch, menuOptions[i], textX, textY);
-        }
+        //game.batch.draw(background, 0, 0, 72, 128);
+        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         game.batch.end();
-        handleTouchInput();
+        stage.act(delta);
+        stage.draw();
     }
 
-    private void handleTouchInput() {
-        if (transitioning || touchCooldown > 0) return;
-
-        if (Gdx.input.isTouched() && !touchHandled) {
-            float touchX = Gdx.input.getX();
-            float touchY = Gdx.input.getY();
-            camera.unproject(touchCoords.set(touchX, touchY, 0));
-
-            for (int i = 0; i < menuBounds.length; i++) {
-                if (menuBounds[i].contains(touchCoords.x, touchCoords.y)) {
-                    if (selectedOption != i) {
-                        selectedOption = i;
-                        handleSelection();
-                    }
-                    break;
-                }
-            }
-            touchHandled = true;
-        } else if (!Gdx.input.isTouched()) {
-            touchHandled = false;
-            selectedOption = -1;
-        }
-    }
-
-    private void handleSelection() {
-        transitioning = true;
-        Gdx.app.postRunnable(() -> {
-            switch (selectedOption) {
-                case 0:
-                    game.setScreen(new GameScreen(game));
-                    break;
-                case 1:
-                    game.setScreen(new BlueScreen(game));
-                    break;
-                case 2:
-                    game.setScreen(new RedScreen(game));
-                    break;
-                case 3:
-                    game.setScreen(new BlackScreen(game));
-                    break;
-                case 4:
-                    game.setScreen(new FinalMapScreen(game));
-                    break;
-                case 5:
-                    game.setScreen(new MenuScreen(game));
-                    break;
-            }
-        });
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-        game.batch.setProjectionMatrix(camera.combined);
-    }
-
+    @Override public void resize(int width, int height) { viewport.update(width, height, true); }
     @Override public void pause() {}
     @Override public void resume() {}
     @Override public void hide() {}
-    @Override public void dispose() {
-        game.batch.dispose();
-        background.dispose();
-        font.dispose();
-    }
-    @Override public void show() {
-        touchCooldown = 0.3f;
-    }
+    @Override public void dispose() { stage.dispose(); background.dispose(); }
+    @Override public void show() {}
 }

@@ -52,6 +52,7 @@ public class RedScreen extends InputAdapter implements Screen{
 
     RedScreen(Main game) {
         this.game = game;
+        game.reproducirJuego();
         startX = 150;
         startY = 7950;
 

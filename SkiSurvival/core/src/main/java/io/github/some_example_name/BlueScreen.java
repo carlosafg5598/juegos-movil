@@ -54,6 +54,7 @@ public class BlueScreen extends InputAdapter implements Screen {
 
     BlueScreen(Main game) {
         this.game = game;
+        game.reproducirJuego();
         startX = 150;
         startY = 4750;
 
