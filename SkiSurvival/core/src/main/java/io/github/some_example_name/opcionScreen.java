@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -25,11 +26,13 @@ public class opcionScreen implements Screen {
     private float musicVolume = 1.0f;
     private float soundVolume = 1.0f;
     private boolean vibrationEnabled = true;
+    private int backgroundOffset;
+    private CheckBox checkVibracion;
 
     public opcionScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight() ,camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         background = new Texture("static_snow.png");
         stage = new Stage(viewport, game.batch);
         Gdx.input.setInputProcessor(stage);
@@ -107,17 +110,44 @@ public class opcionScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         game.batch.begin();
         //game.batch.draw(background, 0, 0, 72, 128);
-        game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // 🔹 **Dibujar el fondo correctamente**
+        backgroundOffset++;
+        if (backgroundOffset % Gdx.graphics.getHeight() == 0) {
+            backgroundOffset = 0;
+        }
+        game.batch.draw(background, 0, -backgroundOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.draw(background, 0, -backgroundOffset + Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //game.batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         game.batch.end();
         stage.act(delta);
         stage.draw();
     }
 
-    @Override public void resize(int width, int height) { viewport.update(width, height, true); }
-    @Override public void pause() {}
-    @Override public void resume() {}
-    @Override public void hide() {}
-    @Override public void dispose() { stage.dispose(); background.dispose(); }
-    @Override public void show() {}
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        background.dispose();
+    }
+
+    @Override
+    public void show() {
+    }
 }

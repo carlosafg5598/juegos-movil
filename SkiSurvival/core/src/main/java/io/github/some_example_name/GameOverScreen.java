@@ -40,14 +40,14 @@ public class GameOverScreen implements Screen {
         this.previousScreen = previousScreen;
         this.resultado = resultado;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         background = new Texture("static_snow.png");
         backgroundOffset = 0;
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
         // 🔹 **Reducir tamaño del texto**
-        font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        //font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
         if ("VICTORIA".equals(resultado)) {
             resultado = "VICTORIA";
             r = 0;
@@ -60,12 +60,15 @@ public class GameOverScreen implements Screen {
             b = 0; // Rojo
         }
 
-
         menuBounds = new Rectangle[menuOptions.length];
+        float buttonWidth = Gdx.graphics.getWidth() * 0.5f;  // 50% del ancho de la pantalla
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f; // 10% de la altura
+        float startY = Gdx.graphics.getHeight() / 2 + (menuOptions.length / 2) * buttonHeight; // Centrar los botones verticalmente
+
         for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 4;   // Centrar más los botones
-            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustar espacio entre botones
-            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // 🔹 **Hacer los botones más pequeños**
+            float optionX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Centrar en X
+            float optionY = startY - i * (buttonHeight + 10); // Separar bien los botones
+            menuBounds[i] = new Rectangle(optionX, optionY, buttonWidth, buttonHeight);
         }
     }
 
@@ -81,28 +84,39 @@ public class GameOverScreen implements Screen {
 
         game.batch.begin();
 
-        // 🔹 **Dibujar el fondo correctamente**
+// 🔹 **Dibujar el fondo correctamente**
         backgroundOffset++;
-        if (backgroundOffset % WORLD_HEIGHT == 0) {
+        if (backgroundOffset % Gdx.graphics.getHeight() == 0) {
             backgroundOffset = 0;
         }
-        game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
-        game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+        game.batch.draw(background, 0, -backgroundOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.draw(background, 0, -backgroundOffset + Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        font.setColor(r, g, b, 1); // Rojo para derrota, verde para victoria
-        font.draw(game.batch, resultado, WORLD_WIDTH / 3.5f, WORLD_HEIGHT - 10);
+// 🔹 **Dibujar el título (VICTORIA o DERROTA)**
+        font.getData().setScale(2.5f);  // 🔹 **Aumentamos el tamaño de la cabecera**
+        font.setColor(r, g, b, 1);  // Color dependiendo del resultado
 
-        // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
+// Centrar el texto en la parte superior
+        float titleWidth = font.getRegion().getTexture().getWidth(); // Obtener ancho del texto
+        float titleX = (Gdx.graphics.getWidth() - titleWidth) / 2; // Centrar en X
+        float titleY = Gdx.graphics.getHeight() - 50; // Posicionar en la parte superior
+        font.draw(game.batch, resultado, titleX, titleY);
+
+// 🔹 **Dibujar el menú de opciones**
+        font.getData().setScale(1.2f);  // 🔹 **Reducimos el tamaño del texto de los botones**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
 
-            // 🔹 **Ajuste dinámico del texto según el botón**
-            float textX = menuBounds[i].x + menuBounds[i].width / 4; // Centrar horizontalmente
-            float textY = menuBounds[i].y + menuBounds[i].height / 2; // Centrar verticalmente
+            // Centrar el texto dentro del botón
+            float textWidth = font.getRegion().getTexture().getWidth();
+            float textX = menuBounds[i].x + (menuBounds[i].width - textWidth) / 2;
+            float textY = menuBounds[i].y + (menuBounds[i].height) / 2 + font.getCapHeight() / 2;
+
             font.draw(game.batch, menuOptions[i], textX, textY);
         }
 
         game.batch.end();
+
         handleTouchInput();
     }
 

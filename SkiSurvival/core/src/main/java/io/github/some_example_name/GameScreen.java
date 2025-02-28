@@ -90,10 +90,12 @@ public class GameScreen extends InputAdapter implements Screen {
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
-                    Gdx.input.vibrate(1000);
+                    if(game.vibrationActive){
+                        Gdx.input.vibrate(250, 100, true);
+                    }
 
                     game.reproducirDerrota();
-                    Gdx.input.vibrate(250, 100, true);
+
 
                     game.setScreen(new GameOverScreen(game, "GameScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {

@@ -85,7 +85,7 @@ public class BlueScreen extends InputAdapter implements Screen {
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
-                    Gdx.input.vibrate(500);
+
 
                     game.reproducirDerrota();
                     Gdx.input.vibrate(250, 100, true);

@@ -23,8 +23,8 @@ public class MenuScreen implements Screen {
     private BitmapFont font;
     private int selectedOption = -1;
     private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
-    private final int WORLD_WIDTH = 72;
-    private final int WORLD_HEIGHT = 128;
+//    private final int WORLD_WIDTH = 72;
+//    private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
     private Rectangle[] menuBounds;
     private boolean touchHandled = false;
@@ -34,21 +34,26 @@ public class MenuScreen implements Screen {
     MenuScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         background = new Texture("static_snow.png");
         backgroundOffset = 0;
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
         // 🔹 **Reducir tamaño del texto**
-        font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        //font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
 
         menuBounds = new Rectangle[menuOptions.length];
+        float buttonWidth = Gdx.graphics.getWidth() * 0.5f;  // 50% del ancho de la pantalla
+        float buttonHeight = Gdx.graphics.getHeight() * 0.1f; // 10% de la altura
+        float startY = Gdx.graphics.getHeight() / 2 + (menuOptions.length / 2) * buttonHeight; // Centrar los botones verticalmente
+
         for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 4;   // Centrar más los botones
-            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustar espacio entre botones
-            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // 🔹 **Hacer los botones más pequeños**
+            float optionX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Centrar en X
+            float optionY = startY - i * (buttonHeight + 10); // Separar bien los botones
+            menuBounds[i] = new Rectangle(optionX, optionY, buttonWidth, buttonHeight);
         }
+
     }
 
     @Override
@@ -63,21 +68,24 @@ public class MenuScreen implements Screen {
 
         // 🔹 **Dibujar el fondo correctamente**
         backgroundOffset++;
-        if (backgroundOffset % WORLD_HEIGHT == 0) {
+        if (backgroundOffset % Gdx.graphics.getHeight() == 0) {
             backgroundOffset = 0;
         }
-        game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
-        game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
+        game.batch.draw(background, 0, -backgroundOffset, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        game.batch.draw(background, 0, -backgroundOffset + Gdx.graphics.getHeight(), Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
 
-            // 🔹 **Ajuste dinámico del texto según el botón**
-            float textX = menuBounds[i].x + menuBounds[i].width / 4; // Centrar horizontalmente
-            float textY = menuBounds[i].y + menuBounds[i].height / 2; // Centrar verticalmente
+            // Centrar el texto dentro del botón
+            float textWidth = font.getRegion().getTexture().getWidth();
+            float textX = menuBounds[i].x + (menuBounds[i].width - textWidth) / 2;
+            float textY = menuBounds[i].y + (menuBounds[i].height) / 2 + font.getCapHeight() / 2; // Centrar mejor verticalmente
+
             font.draw(game.batch, menuOptions[i], textX, textY);
         }
+
 
         game.batch.end();
         handleTouchInput();

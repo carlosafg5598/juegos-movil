@@ -9,8 +9,11 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.Timer;
+
+import java.util.Locale;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms.
@@ -30,10 +33,12 @@ public class Main extends Game {
     private final float DURACION_VICTORIA = 3.7f;  // Ajusta esta duración según el sonido
     private final float DURACION_DERROTA = 0.7f;   // Ajusta esta duración según el sonido
 
-    private float musicVolume;
-    private float soundVolume;
-    private boolean vibrationActive;
-    private Preferences prefs; //guardar opciones
+    public float musicVolume;
+    public float soundVolume;
+    public boolean vibrationActive;
+    public Preferences prefs; //guardar opciones
+
+    public I18NBundle bundle;
 
     @Override
     public void create() {
@@ -61,12 +66,33 @@ public class Main extends Game {
         soundVolume = prefs.getFloat("volumen_sonido", 1.0f);
         vibrationActive = prefs.getBoolean("vibracion", true);
 
+//        String idioma = prefs.getString("idioma", Locale.getDefault().getLanguage());
+//        cargarIdioma(idioma);
+
+        //TODO ACABAR IDIOMAS
+        
         // Aplicar volumen
         updateAudioSettings();
 
 
 
     }
+
+//    public void cargarIdioma(String idioma) {
+//        Locale locale;
+//        switch (idioma) {
+//            case "gl":
+//                locale = new Locale("gl");
+//                break;
+//            case "en":
+//                locale = new Locale("en");
+//                break;
+//            default:
+//                locale = new Locale("es");
+//                break;
+//        }
+//
+//    }
 
     public void updateAudioSettings() {
         musicFondo.setVolume(musicVolume);
@@ -89,7 +115,7 @@ public class Main extends Game {
 
     public void setVibrationEnabled(boolean enabled) {
         this.vibrationActive = enabled;
-        prefs.putBoolean("vibration", enabled);
+        prefs.putBoolean("vibracion", enabled);
         prefs.flush();
     }
 
