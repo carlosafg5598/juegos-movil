@@ -6,8 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -15,14 +13,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -34,145 +25,146 @@ public class FinalMapScreen extends InputAdapter implements Screen {
     private Camera camera;
     private Viewport viewport;
     private TmxMapLoader mapLoader;
-    private Array<TiledMap> mapChunks;
-    private OrthogonalTiledMapRenderer renderer;
-    private BitmapFont font;
+    private OrthogonalTiledMapRenderer mapRenderer;
+    private Array<TiledMap> mapSections;
+    private int currentSectionIndex = 0;
+    private float playerY;
+
+    // Box2D Variables
     private World world;
     private Box2DDebugRenderer b2dr;
     private Esquiador esquiador;
-    private float startX = 150;
-    private float startY = 15950;
-    private final float WORLD_WIDTH = 500;
-    private final float WORLD_HEIGHT = 800;
-    private float lastChunkY;
-    private final float CHUNK_HEIGHT = 400;
 
-    FinalMapScreen(Main game) {
+    private static final int SECTION_HEIGHT = 100; // Cada sección tiene 100 tiles de alto
+    private static final int TOTAL_SECTIONS = 10;
+
+    public FinalMapScreen(Main game) {
         this.game = game;
+    }
 
+    @Override
+    public void show() {
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
-        game.batch = new SpriteBatch();
-        font = new BitmapFont();
-
-        world = new World(new Vector2(0, -9.8f), true); // Gravedad hacia abajo
-        b2dr = new Box2DDebugRenderer();
-
+        viewport = new FitViewport(320, 480, camera); // Ajuste para portrait mode
         mapLoader = new TmxMapLoader();
-        mapChunks = new Array<>();
-        esquiador = new Esquiador(world, startX, startY);
+        mapRenderer = new OrthogonalTiledMapRenderer(null);
+        mapSections = new Array<>();
 
-        cargarPrimerChunk();
+        world = new World(new Vector2(0, -9.8f), true);
+        b2dr = new Box2DDebugRenderer();
+        esquiador = new Esquiador(world, 160, 1600); // Ajuste inicial más arriba
+
+        splitMapIntoSections();
+        createObstacles();
+
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                Object dataA = contact.getFixtureA().getUserData();
+                Object dataB = contact.getFixtureB().getUserData();
+
+                if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
+                    game.setScreen(new GameOverScreen(game, "FinalMapScreen", "DERROTA"));
+                } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
+                    game.setScreen(new GameOverScreen(game, "FinalMapScreen", "VICTORIA"));
+                }
+            }
+
+            @Override
+            public void endContact(Contact contact) {}
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {}
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {}
+        });
     }
 
-    private void cargarPrimerChunk() {
-        TiledMap map = mapLoader.load("mapas/EsquiInfinito.tmx");
-        renderer = new OrthogonalTiledMapRenderer(map);
-        mapChunks.add(map);
-        lastChunkY = esquiador.body.getPosition().y;
-        createObstacles(map);
-    }
-
-    private void crearNuevoChunk() {
-        float nuevaPosY = esquiador.body.getPosition().y + CHUNK_HEIGHT;
-        TiledMap nuevoChunk = mapLoader.load("mapas/EsquiInfinito.tmx");
-        mapChunks.add(nuevoChunk);
-        lastChunkY = nuevaPosY;
-        createObstacles(nuevoChunk);
-
-        // Limitar la cantidad de chunks cargados para no usar demasiada memoria
-        if (mapChunks.size > 3) {
-            TiledMap chunkViejo = mapChunks.removeIndex(0);
-            chunkViejo.dispose();
+    private void splitMapIntoSections() {
+        for (int i = 0; i < TOTAL_SECTIONS; i++) {
+            int startY = i * SECTION_HEIGHT;
+            TiledMap section = extractMapSection(startY, SECTION_HEIGHT);
+            mapSections.add(section);
         }
+        mapRenderer.setMap(mapSections.first());
     }
 
-    private void createObstacles(TiledMap map) {
+    private TiledMap extractMapSection(int startY, int height) {
+        return mapLoader.load("mapas/EsquiInfinito.tmx");
+    }
+
+    private void createObstacles() {
         BodyDef bodyDef = new BodyDef();
         PolygonShape shape = new PolygonShape();
         FixtureDef fixtureDef = new FixtureDef();
         Body body;
 
-        // Crear los obstáculos
-        for (MapObject object : map.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
-            Rectangle rect = ((RectangleMapObject) object).getRectangle();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(rect.getX() + rect.getWidth() / 2, rect.getY() + rect.getHeight() / 2);
-            body = world.createBody(bodyDef);
-            shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
-            fixtureDef.shape = shape;
-            body.createFixture(fixtureDef).setUserData("obstaculo");
-        }
-
-        
-    }
-
-    private void handleInput(float dt) {
-        if (Gdx.input.isTouched()) {
-            int screenX = Gdx.input.getX(); // Obtener la posición X del toque
-
-            // Si el toque está en la mitad derecha de la pantalla
-            if (screenX > Gdx.graphics.getWidth() / 2) {
-                esquiador.move(50, esquiador.body.getLinearVelocity().y);  // Movimiento hacia la derecha
-            } else {
-                esquiador.move(-50, esquiador.body.getLinearVelocity().y);  // Movimiento hacia la izquierda
+        for (TiledMap section : mapSections) {
+            for (MapObject object : section.getLayers().get(2).getObjects().getByType(RectangleMapObject.class)) {
+                Rectangle rect = ((RectangleMapObject) object).getRectangle();
+                bodyDef.type = BodyDef.BodyType.StaticBody;
+                bodyDef.position.set(rect.getX(), rect.getY());
+                body = world.createBody(bodyDef);
+                shape.setAsBox(rect.getWidth() / 2, rect.getHeight() / 2);
+                fixtureDef.shape = shape;
+                body.createFixture(fixtureDef).setUserData("obstaculo");
             }
         }
     }
 
-    public void update(float dt) {
-        handleInput(dt);
+    public void update(float delta) {
         world.step(1 / 60f, 6, 2);
-        esquiador.update(dt);
+        esquiador.update(delta);
+        playerY = esquiador.body.getPosition().y;
+        checkForNewSection();
 
-        // Detectar si el esquiador está cerca del final del mapa para cargar un nuevo "chunk"
-        if (esquiador.body.getPosition().y > lastChunkY - CHUNK_HEIGHT) {
-            crearNuevoChunk();
-        }
-
-        // Actualiza la posición de la cámara para que siga al esquiador
-        camera.position.set(esquiador.body.getPosition().x, esquiador.body.getPosition().y, 0);
+        camera.position.set(160, playerY, 0); // Ajuste para modo vertical
         camera.update();
+        mapRenderer.setView((OrthographicCamera) camera);
+    }
+
+    private void checkForNewSection() {
+        if (playerY < currentSectionIndex * SECTION_HEIGHT * 16) { // Se detecta cuando baja
+            currentSectionIndex++;
+            if (currentSectionIndex < TOTAL_SECTIONS) {
+                mapRenderer.setMap(mapSections.get(currentSectionIndex));
+            }
+        }
     }
 
     @Override
     public void render(float delta) {
         update(delta);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        renderer.setView((OrthographicCamera) camera);
-        renderer.render();
+        mapRenderer.render();
         b2dr.render(world, camera.combined);
-
-        game.batch.begin();
-        game.batch.setProjectionMatrix(camera.combined);
-        esquiador.render(game.batch); // Dibujar esquiador animado
-        game.batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        viewport.update(width, height);
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
     }
 
     @Override
     public void dispose() {
-        for (TiledMap map : mapChunks) {
+        for (TiledMap map : mapSections) {
             map.dispose();
         }
-        game.batch.dispose();
-        font.dispose();
+        mapRenderer.dispose();
         esquiador.dispose();
     }
-
-    @Override
-    public void show() {}
-
-    @Override
-    public void hide() {}
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
 }

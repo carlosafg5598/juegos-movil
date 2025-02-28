@@ -89,6 +89,7 @@ public class GameScreen extends InputAdapter implements Screen {
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
+                    Gdx.input.vibrate(1000);
 
                     game.reproducirDerrota();
                     game.setScreen(new GameOverScreen(game, "GameScreen", "DERROTA"));
@@ -98,6 +99,7 @@ public class GameScreen extends InputAdapter implements Screen {
                     game.setScreen(new GameOverScreen(game, "GameScreen", "VICTORIA"));
                 }
             }
+
 
             @Override
             public void endContact(Contact contact) {

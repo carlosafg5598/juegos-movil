@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -23,129 +25,110 @@ public class opcionesScreen implements Screen {
     private Camera camera;
     private Viewport viewport;
     private Texture background;
-    private BitmapFont font;
-    private SpriteBatch batch;
-    private Stage stage;
-    private Slider musicSlider, sfxSlider;
-    private TextButton backButton;
-    private final int WORLD_WIDTH = 720;
-    private final int WORLD_HEIGHT = 1280;
-    private Preferences preferences;
-    private Music backgroundMusic; // Objeto para controlar la música
-    private Sound[] soundEffects; // Arreglo de efectos de sonido
     private int backgroundOffset;
+    private BitmapFont font;
+    private int selectedOption = -1;
+    private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
+    private final int WORLD_WIDTH = 72;
+    private final int WORLD_HEIGHT = 128;
+    private Vector3 touchCoords = new Vector3();
+    private Rectangle[] menuBounds;
+    private boolean touchHandled = false;
+    private boolean transitioning = false;
+    private float touchCooldown = 0.3f;
 
     public opcionesScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         background = new Texture("static_snow.png");
-        batch = game.batch;
+        backgroundOffset = 0;
+        game.batch = new SpriteBatch();
         font = new BitmapFont();
-        font.getData().setScale(3f);
-        font.setColor(0, 0, 0, 1);
 
-        preferences = Gdx.app.getPreferences("GameSettings");
-        float musicVolume = preferences.getFloat("musicVolume", 0.5f);
-        float sfxVolume = preferences.getFloat("sfxVolume", 0.5f);
+        // 🔹 **Reducir tamaño del texto**
+        font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
 
-        // Cargar música y efectos de sonido
-        backgroundMusic = Gdx.audio.newMusic(Gdx.files.internal("spritesEsqui/Black Diamond.mp3"));
-        backgroundMusic.setLooping(true); // Si deseas que la música se repita
-        backgroundMusic.setVolume(musicVolume); // Establecer el volumen inicial de la música
-
-        soundEffects = new Sound[2]; // Cargar algunos efectos de sonido de ejemplo
-        soundEffects[0] = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/Victory.mp3"));
-        soundEffects[1] = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/5Hit_Sounds/mp3/die1.mp3"));
-
-        // Establecer el volumen de los efectos de sonido
-        setSfxVolume(sfxVolume);
-
-        stage = new Stage(viewport, batch);
-        Gdx.input.setInputProcessor(stage);
-
-        // Crear un estilo para los botones
-        TextButton.TextButtonStyle buttonStyle = new TextButton.TextButtonStyle();
-        buttonStyle.font = font;
-
-        // Crear un estilo para los sliders
-        Slider.SliderStyle sliderStyle = new Slider.SliderStyle();
-        sliderStyle.knob = null;
-        sliderStyle.background = null;
-
-        // Crear sliders sin necesidad de un archivo .json
-        musicSlider = new Slider(0, 1, 0.1f, false, sliderStyle);
-        musicSlider.setValue(musicVolume);
-        musicSlider.setSize(400, 50);
-        musicSlider.setPosition(160, 850);
-        musicSlider.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                float volume = musicSlider.getValue();
-                preferences.putFloat("musicVolume", volume);
-                preferences.flush();
-                backgroundMusic.setVolume(volume); // Actualizar volumen de la música
-            }
-        });
-        stage.addActor(musicSlider);
-
-        sfxSlider = new Slider(0, 1, 0.1f, false, sliderStyle);
-        sfxSlider.setValue(sfxVolume);
-        sfxSlider.setSize(400, 50);
-        sfxSlider.setPosition(160, 750);
-        sfxSlider.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                float volume = sfxSlider.getValue();
-                preferences.putFloat("sfxVolume", volume);
-                preferences.flush();
-                setSfxVolume(volume); // Actualizar volumen de los efectos de sonido
-            }
-        });
-
-        stage.addActor(sfxSlider);
-
-        // Botón para volver atrás
-        backButton = new TextButton("Atrás", buttonStyle);
-        backButton.setSize(400, 100);
-        backButton.setPosition(160, 500);
-        backButton.addListener(new com.badlogic.gdx.scenes.scene2d.utils.ClickListener() {
-            @Override
-            public void clicked(com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-                preferences.putFloat("musicVolume", musicSlider.getValue());
-                preferences.putFloat("sfxVolume", sfxSlider.getValue());
-                preferences.flush();
-                game.setScreen(new MenuScreen(game)); // Volver al menú principal
-            }
-        });
-        stage.addActor(backButton);
-    }
-
-    private void setSfxVolume(float volume) {
-        // Actualiza el volumen de todos los efectos de sonido
-        for (Sound sound : soundEffects) {
-            sound.setVolume(0, volume); // 0 es el índice del canal de reproducción (por defecto)
+        menuBounds = new Rectangle[menuOptions.length];
+        for (int i = 0; i < menuOptions.length; i++) {
+            float optionX = WORLD_WIDTH / 4;   // Centrar más los botones
+            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustar espacio entre botones
+            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // 🔹 **Hacer los botones más pequeños**
         }
     }
+
+
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        if (touchCooldown > 0) {
+            touchCooldown -= delta;
+        }
 
-        batch.begin();
+        game.batch.begin();
+
+        // 🔹 **Dibujar el fondo correctamente**
         backgroundOffset++;
         if (backgroundOffset % WORLD_HEIGHT == 0) {
             backgroundOffset = 0;
         }
         game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
-        font.draw(batch, "Volumen Música", 280, 920);
-        font.draw(batch, "Volumen Efectos", 280, 820);
-        batch.end();
 
-        stage.act(delta);
-        stage.draw();
+        // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
+        for (int i = 0; i < menuOptions.length; i++) {
+            font.setColor(0, 0, 0, 1);
+
+            // 🔹 **Ajuste dinámico del texto según el botón**
+            float textX = menuBounds[i].x + menuBounds[i].width / 4; // Centrar horizontalmente
+            float textY = menuBounds[i].y + menuBounds[i].height / 2; // Centrar verticalmente
+            font.draw(game.batch, menuOptions[i], textX, textY);
+        }
+
+        game.batch.end();
+        handleTouchInput();
+    }
+    private void handleTouchInput() {
+        if (transitioning || touchCooldown > 0) return;
+
+        if (Gdx.input.isTouched() && !touchHandled) {
+            float touchX = Gdx.input.getX();
+            float touchY = Gdx.input.getY();
+            camera.unproject(touchCoords.set(touchX, touchY, 0));
+
+            for (int i = 0; i < menuBounds.length; i++) {
+                if (menuBounds[i].contains(touchCoords.x, touchCoords.y)) {
+                    if (selectedOption != i) {
+                        selectedOption = i;
+                        handleSelection();
+                    }
+                    break;
+                }
+            }
+            touchHandled = true;
+        } else if (!Gdx.input.isTouched()) {
+            touchHandled = false;
+            selectedOption = -1;
+        }
+    }
+
+    private void handleSelection() {
+        transitioning = true;
+        Gdx.app.postRunnable(() -> {
+            switch (selectedOption) {
+                case 0:
+                    game.setScreen(new MenuDeJuego(game));
+                    break;
+                case 1:
+                    game.setScreen(new opcionesScreen(game));
+                    break;
+                case 2:
+                    Gdx.app.exit();
+                    break;
+            }
+        });
     }
 
     @Override
@@ -153,19 +136,7 @@ public class opcionesScreen implements Screen {
         viewport.update(width, height, true);
     }
 
-    @Override
-    public void dispose() {
-        background.dispose();
-        font.dispose();
-        stage.dispose();
-        backgroundMusic.dispose();
-        for (Sound sound : soundEffects) {
-            sound.dispose();
-        }
-    }
 
-    @Override
-    public void show() {}
 
     @Override
     public void pause() {}
@@ -175,4 +146,13 @@ public class opcionesScreen implements Screen {
 
     @Override
     public void hide() {}
+    @Override
+    public void dispose() {
+        game.batch.dispose();
+        background.dispose();
+        font.dispose();
+    }
+
+    @Override
+    public void show() {touchCooldown = 0.3f;}
 }

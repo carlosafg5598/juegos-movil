@@ -82,7 +82,8 @@ public class RedScreen extends InputAdapter implements Screen{
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
-                    System.out.println("¡Colisión con un obstáculo! Has perdido.");
+                    Gdx.input.vibrate(500);
+
                     game.reproducirDerrota();
                     game.setScreen(new GameOverScreen(game, "RedScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {

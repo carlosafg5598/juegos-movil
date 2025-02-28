@@ -22,6 +22,10 @@ public class Main extends Game {
     private Sound sonidoVictoria;  // Sonido de victoria
     private Sound sonidoDerrota;
 
+    private boolean musicaActivada = true;  // Controlar si la música está activada
+    private boolean sonidosActivados = true;  // Controlar si los sonidos están activados
+    private boolean vibracionActivada = true; // Controlar si la vibración está activada
+
     private final float DURACION_VICTORIA = 3.7f;  // Ajusta esta duración según el sonido
     private final float DURACION_DERROTA = 0.7f;   // Ajusta esta duración según el sonido
 
@@ -34,12 +38,15 @@ public class Main extends Game {
         musicFondo = Gdx.audio.newMusic(Gdx.files.internal("spritesEsqui/Black Diamond.mp3"));
         musicFondo.setLooping(true);  // Repetir la música
         musicFondo.setVolume(0.5f);   // Ajustar el volumen
-        musicFondo.play();            // Reproducir la música
+        if(musicaActivada){
+            musicFondo.play();
+        }
 
         sonidoVictoria = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/Victory.mp3"));
         sonidoDerrota = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/5Hit_Sounds/mp3/die1.mp3"));
 
     }
+
 
     @Override
     public void dispose() {
