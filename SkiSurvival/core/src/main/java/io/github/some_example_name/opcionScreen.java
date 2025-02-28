@@ -1,10 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,14 +10,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-public class opcionesScreen implements Screen {
+public class opcionScreen implements Screen {
     private final Main game;
     private Camera camera;
     private Viewport viewport;
@@ -28,7 +21,7 @@ public class opcionesScreen implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
+    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ","M a p a  F i n a l" ,"A t r a s"};
     private final int WORLD_WIDTH = 72;
     private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -37,7 +30,7 @@ public class opcionesScreen implements Screen {
     private boolean transitioning = false;
     private float touchCooldown = 0.3f;
 
-    public opcionesScreen(Main game) {
+    opcionScreen(Main game) {
         this.game = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -46,18 +39,17 @@ public class opcionesScreen implements Screen {
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
-        // 🔹 **Reducir tamaño del texto**
-        font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        // 📌 **Reducimos el tamaño del texto**
+        font.getData().setScale(0.2f); // Antes era 0.3f, ahora más pequeño
 
+        // 📌 **Creamos los botones más pequeños**
         menuBounds = new Rectangle[menuOptions.length];
         for (int i = 0; i < menuOptions.length; i++) {
-            float optionX = WORLD_WIDTH / 4;   // Centrar más los botones
-            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustar espacio entre botones
-            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // 🔹 **Hacer los botones más pequeños**
+            float optionX = WORLD_WIDTH / 4; // Centramos más los botones
+            float optionY = WORLD_HEIGHT / 2 + 15 - i * 10; // Ajustamos el espaciado
+            menuBounds[i] = new Rectangle(optionX, optionY - 3, 40, 8); // Botones más pequeños
         }
     }
-
-
 
     @Override
     public void render(float delta) {
@@ -69,7 +61,7 @@ public class opcionesScreen implements Screen {
 
         game.batch.begin();
 
-        // 🔹 **Dibujar el fondo correctamente**
+        // 📌 **Dibujamos el fondo correctamente**
         backgroundOffset++;
         if (backgroundOffset % WORLD_HEIGHT == 0) {
             backgroundOffset = 0;
@@ -77,19 +69,20 @@ public class opcionesScreen implements Screen {
         game.batch.draw(background, 0, -backgroundOffset, WORLD_WIDTH, WORLD_HEIGHT);
         game.batch.draw(background, 0, -backgroundOffset + WORLD_HEIGHT, WORLD_WIDTH, WORLD_HEIGHT);
 
-        // 🔹 **Dibujar el texto más pequeño y centrado dentro del botón**
+        // 📌 **Dibujamos el texto dentro del botón de forma más centrada**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
 
-            // 🔹 **Ajuste dinámico del texto según el botón**
-            float textX = menuBounds[i].x + menuBounds[i].width / 4; // Centrar horizontalmente
-            float textY = menuBounds[i].y + menuBounds[i].height / 2; // Centrar verticalmente
+            // 📌 **Ajustamos el texto para que esté dentro del botón**
+            float textX = menuBounds[i].x + menuBounds[i].width / 6; // Centrar horizontalmente
+            float textY = menuBounds[i].y + menuBounds[i].height / 2 + 2; // Centrar verticalmente
             font.draw(game.batch, menuOptions[i], textX, textY);
         }
 
         game.batch.end();
         handleTouchInput();
     }
+
     private void handleTouchInput() {
         if (transitioning || touchCooldown > 0) return;
 
@@ -119,13 +112,22 @@ public class opcionesScreen implements Screen {
         Gdx.app.postRunnable(() -> {
             switch (selectedOption) {
                 case 0:
-                    game.setScreen(new MenuDeJuego(game));
+                    game.setScreen(new GameScreen(game));
                     break;
                 case 1:
-                    game.setScreen(new opcionesScreen(game));
+                    game.setScreen(new BlueScreen(game));
                     break;
                 case 2:
-                    Gdx.app.exit();
+                    game.setScreen(new RedScreen(game));
+                    break;
+                case 3:
+                    game.setScreen(new BlackScreen(game));
+                    break;
+                case 4:
+                    game.setScreen(new FinalMapScreen(game));
+                    break;
+                case 5:
+                    game.setScreen(new MenuScreen(game));
                     break;
             }
         });
@@ -134,25 +136,18 @@ public class opcionesScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
+        game.batch.setProjectionMatrix(camera.combined);
     }
 
-
-
-    @Override
-    public void pause() {}
-
-    @Override
-    public void resume() {}
-
-    @Override
-    public void hide() {}
-    @Override
-    public void dispose() {
+    @Override public void pause() {}
+    @Override public void resume() {}
+    @Override public void hide() {}
+    @Override public void dispose() {
         game.batch.dispose();
         background.dispose();
         font.dispose();
     }
-
-    @Override
-    public void show() {touchCooldown = 0.3f;}
+    @Override public void show() {
+        touchCooldown = 0.3f;
+    }
 }

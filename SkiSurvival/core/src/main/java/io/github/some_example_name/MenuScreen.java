@@ -115,7 +115,7 @@ public class MenuScreen implements Screen {
                     game.setScreen(new MenuDeJuego(game));
                     break;
                 case 1:
-                    game.setScreen(new opcionesScreen(game));
+                    game.setScreen(new opcionScreen(game));
                     break;
                 case 2:
                     Gdx.app.exit();
