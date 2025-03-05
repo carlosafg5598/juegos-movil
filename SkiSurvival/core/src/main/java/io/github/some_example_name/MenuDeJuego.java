@@ -22,7 +22,7 @@ public class MenuDeJuego implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o ","M a p a  F i n a l" ,"A t r a s"};
+    private final String[] menuOptions = {"V e r d e ", "A z u l ", "R o j o ", "N e g r o " ,"A t r a s"};
 //    private final int WORLD_WIDTH = 72;
 //    private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
@@ -41,7 +41,7 @@ public class MenuDeJuego implements Screen {
         font = new BitmapFont();
 
         // 📌 **Reducimos el tamaño del texto**
-        //font.getData().setScale(0.2f); // Antes era 0.3f, ahora más pequeño
+        font.getData().setScale(2f); // Antes era 0.3f, ahora más pequeño
 
         // 📌 **Creamos los botones más pequeños**
         menuBounds = new Rectangle[menuOptions.length];
@@ -130,10 +130,8 @@ public class MenuDeJuego implements Screen {
                 case 3:
                     game.setScreen(new BlackScreen(game));
                     break;
+
                 case 4:
-                    game.setScreen(new FinalMapScreen(game));
-                    break;
-                case 5:
                     game.setScreen(new MenuScreen(game));
                     break;
             }

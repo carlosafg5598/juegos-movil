@@ -23,8 +23,6 @@ public class GameOverScreen implements Screen {
     private BitmapFont font;
     private int selectedOption = -1;
     private final String[] menuOptions = {"V o l v e r  a  J u g a r ", "M e n u  D e  J u e g o", "S a l i r  D e l  J u e g o"};
-    private final int WORLD_WIDTH = 72;
-    private final int WORLD_HEIGHT = 128;
     private Vector3 touchCoords = new Vector3();
     private Rectangle[] menuBounds;
     private boolean touchHandled = false;
@@ -46,8 +44,8 @@ public class GameOverScreen implements Screen {
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
-        // 🔹 **Reducir tamaño del texto**
-        //font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+
+
         if ("VICTORIA".equals(resultado)) {
             resultado = "VICTORIA";
             r = 0;
@@ -103,7 +101,7 @@ public class GameOverScreen implements Screen {
         font.draw(game.batch, resultado, titleX, titleY);
 
 // 🔹 **Dibujar el menú de opciones**
-        font.getData().setScale(1.2f);  // 🔹 **Reducimos el tamaño del texto de los botones**
+        font.getData().setScale(2f);  // 🔹 **Reducimos el tamaño del texto de los botones**
         for (int i = 0; i < menuOptions.length; i++) {
             font.setColor(0, 0, 0, 1);
 

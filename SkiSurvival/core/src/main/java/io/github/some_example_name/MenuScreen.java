@@ -22,9 +22,8 @@ public class MenuScreen implements Screen {
     private int backgroundOffset;
     private BitmapFont font;
     private int selectedOption = -1;
-    private final String[] menuOptions = {"J u g a r ", "O p c i o n e s ", "S a l i r "};
-//    private final int WORLD_WIDTH = 72;
-//    private final int WORLD_HEIGHT = 128;
+    private String[] menuOptions;
+
     private Vector3 touchCoords = new Vector3();
     private Rectangle[] menuBounds;
     private boolean touchHandled = false;
@@ -40,8 +39,10 @@ public class MenuScreen implements Screen {
         game.batch = new SpriteBatch();
         font = new BitmapFont();
 
+        updateText();
+
         // 🔹 **Reducir tamaño del texto**
-        //font.getData().setScale(0.2f); // Antes estaba en 0.3f, ahora más pequeño.
+        font.getData().setScale(2f); // Antes estaba en 0.3f, ahora más pequeño.
 
         menuBounds = new Rectangle[menuOptions.length];
         float buttonWidth = Gdx.graphics.getWidth() * 0.5f;  // 50% del ancho de la pantalla
@@ -55,6 +56,15 @@ public class MenuScreen implements Screen {
         }
 
     }
+    private void updateText() {
+        menuOptions = new String[]{
+            LanguageManager.get("Jugar"),
+            LanguageManager.get("Opciones"),
+            LanguageManager.get("Partidas"),
+            LanguageManager.get("Salir")
+        };
+    }
+
 
     @Override
     public void render(float delta) {
@@ -126,6 +136,9 @@ public class MenuScreen implements Screen {
                     game.setScreen(new opcionScreen(game));
                     break;
                 case 2:
+                    game.setScreen(new HistorialScreen(game));
+                    break;
+                case 3:
                     Gdx.app.exit();
                     break;
             }
@@ -147,6 +160,7 @@ public class MenuScreen implements Screen {
         font.dispose();
     }
     @Override public void show() {
+        updateText();
         touchCooldown = 0.3f;
     }
 }

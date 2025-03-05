@@ -29,6 +29,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import Sprites.Esquiador;
 
 public class BlueScreen extends InputAdapter implements Screen {
@@ -40,13 +44,14 @@ public class BlueScreen extends InputAdapter implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     private BitmapFont font;
-    private final float WORLD_WIDTH = 500;
-    private final float WORLD_HEIGHT = 800;
+    private final float WORLD_WIDTH = Gdx.graphics.getWidth();
+    private final float WORLD_HEIGHT = Gdx.graphics.getHeight();
 
     // Box2D Variables
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    private boolean debug = false;
     // Esquiador y su body
     private Esquiador esquiador;
     private float startX;
@@ -56,7 +61,7 @@ public class BlueScreen extends InputAdapter implements Screen {
         this.game = game;
         game.reproducirJuego();
         startX = 150;
-        startY = 4750;
+        startY = Gdx.graphics.getHeight()+ 3200;
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -70,6 +75,7 @@ public class BlueScreen extends InputAdapter implements Screen {
         camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
         world = new World(new Vector2(0, -9.8f), true); // Gravedad hacia abajo
         b2dr = new Box2DDebugRenderer();
+
 
         // Crear el esquiador
         esquiador = new Esquiador(world, startX, startY);
@@ -85,13 +91,17 @@ public class BlueScreen extends InputAdapter implements Screen {
                 Object dataB = contact.getFixtureB().getUserData();
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
-
+                    if(game.vibrationActive){
+                        Gdx.input.vibrate(250, 100, true);
+                    }
+                    guardarResultadoPartida("EsquiAzul", false); // Guardar derrota
 
                     game.reproducirDerrota();
-                    Gdx.input.vibrate(250, 100, true);
+
                     game.setScreen(new GameOverScreen(game, "BlueScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
                     System.out.println("¡Has llegado a la meta! Has ganado.");
+                    guardarResultadoPartida("EsquiAzul", true);
                     game.reproducirVictoria();
                     game.setScreen(new GameOverScreen(game, "BlueScreen", "VICTORIA"));
                 }
@@ -204,7 +214,10 @@ public class BlueScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        b2dr.render(world, camera.combined);
+        if (debug) {
+            b2dr.render(world, camera.combined);
+        }
+
 
         game.batch.begin();
         game.batch.setProjectionMatrix(camera.combined);
@@ -240,5 +253,13 @@ public class BlueScreen extends InputAdapter implements Screen {
 
     @Override
     public void resume() {
+    }
+    public void guardarResultadoPartida(String mapa, boolean gano) {
+        String fecha = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String resultado = gano ? "Ganó" : "Perdió";
+
+        // Guardar en la base de datos
+        ((Main) Gdx.app.getApplicationListener()).getDatabase().insertarPartida(mapa, fecha, resultado);
+        System.out.println("Partida guardada: " + mapa + " | " + fecha + " | " + resultado);
     }
 }

@@ -20,6 +20,8 @@ import java.util.Locale;
  */
 public class Main extends Game {
 
+    private DatabaseInterface database;
+
     MenuScreen menuScreen;
     public SpriteBatch batch;
     private Music musicFondo;  // Variable para la música de fondo
@@ -38,10 +40,27 @@ public class Main extends Game {
     public boolean vibrationActive;
     public Preferences prefs; //guardar opciones
 
-    public I18NBundle bundle;
+
+    public Main(DatabaseInterface database) {
+        this.database = database;
+    }
+
+    public DatabaseInterface getDatabase() {
+        return database;
+    }
 
     @Override
     public void create() {
+//        Preferences prefs = Gdx.app.getPreferences("GameSettings");
+//        String savedLanguage = prefs.getString("language", "es");
+//        LanguageManager.setLanguage(savedLanguage);
+        prefs = Gdx.app.getPreferences("configuracion_juego");
+        String savedLanguage = prefs.getString("language", "es");
+        musicVolume = prefs.getFloat("volumen_musica", 1.0f);
+        soundVolume = prefs.getFloat("volumen_sonido", 1.0f);
+        vibrationActive = prefs.getBoolean("vibracion", true);
+
+        LanguageManager.setLanguage(savedLanguage);
         batch = new SpriteBatch();
         menuScreen = new MenuScreen(this);
         setScreen(menuScreen);
@@ -61,19 +80,14 @@ public class Main extends Game {
         sonidoVictoria = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/sonidos/Victory.mp3"));
         sonidoDerrota = Gdx.audio.newSound(Gdx.files.internal("spritesEsqui/sonidos/die1.mp3"));
 
-        prefs = Gdx.app.getPreferences("configuracion_juego");
-        musicVolume = prefs.getFloat("volumen_musica", 1.0f);
-        soundVolume = prefs.getFloat("volumen_sonido", 1.0f);
-        vibrationActive = prefs.getBoolean("vibracion", true);
 
 //        String idioma = prefs.getString("idioma", Locale.getDefault().getLanguage());
 //        cargarIdioma(idioma);
 
         //TODO ACABAR IDIOMAS
-        
+
         // Aplicar volumen
         updateAudioSettings();
-
 
 
     }

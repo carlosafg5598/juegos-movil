@@ -28,6 +28,10 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import Sprites.Esquiador;
 
 public class BlackScreen extends InputAdapter implements Screen {
@@ -39,13 +43,14 @@ public class BlackScreen extends InputAdapter implements Screen {
     private OrthogonalTiledMapRenderer renderer;
 
     private BitmapFont font;
-    private final float WORLD_WIDTH = 500;
-    private final float WORLD_HEIGHT = 800;
+    private final float WORLD_WIDTH = Gdx.graphics.getWidth();
+    private final float WORLD_HEIGHT = Gdx.graphics.getHeight();
 
     // Box2D Variables
     private World world;
     private Box2DDebugRenderer b2dr;
 
+    private boolean debug = false;
     // Esquiador y su body
     private Esquiador esquiador;
     private float startX;
@@ -55,7 +60,7 @@ public class BlackScreen extends InputAdapter implements Screen {
         this.game = game;
         game.reproducirJuego();
         startX = 150;
-        startY = 15950;
+        startY = Gdx.graphics.getHeight()+ 14400;
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -85,11 +90,15 @@ public class BlackScreen extends InputAdapter implements Screen {
 
                 if ("obstaculo".equals(dataA) || "obstaculo".equals(dataB)) {
 
-                    Gdx.input.vibrate(250, 100, true);
+                    if(game.vibrationActive){
+                        Gdx.input.vibrate(250, 100, true);
+                    }
+                    guardarResultadoPartida("EsquiNegro", false);
                     game.reproducirDerrota();
                     game.setScreen(new GameOverScreen(game, "BlackScreen", "DERROTA"));
                 } else if ("meta".equals(dataA) || "meta".equals(dataB)) {
                     System.out.println("¡Has llegado a la meta! Has ganado.");
+                    guardarResultadoPartida("EsquiNegro", true);
                     game.reproducirVictoria();
                     game.setScreen(new GameOverScreen(game, "BlackScreen", "VICTORIA"));
                 }
@@ -136,6 +145,14 @@ public class BlackScreen extends InputAdapter implements Screen {
             fixtureDef.shape = shape;
             body.createFixture(fixtureDef).setUserData("meta");
         }
+    }
+    public void guardarResultadoPartida(String mapa, boolean gano) {
+        String fecha = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        String resultado = gano ? "Ganó" : "Perdió";
+
+        // Guardar en la base de datos
+        ((Main) Gdx.app.getApplicationListener()).getDatabase().insertarPartida(mapa, fecha, resultado);
+        System.out.println("Partida guardada: " + mapa + " | " + fecha + " | " + resultado);
     }
 
     public void handleInput(float dt) {
@@ -203,7 +220,10 @@ public class BlackScreen extends InputAdapter implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         renderer.render();
-        b2dr.render(world, camera.combined);
+        if (debug) {
+            b2dr.render(world, camera.combined);
+        }
+
 
         game.batch.begin();
         game.batch.setProjectionMatrix(camera.combined);

@@ -1,6 +1,7 @@
 package io.github.some_example_name;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -48,7 +49,7 @@ public class opcionScreen implements Screen {
 
         Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json")); // Puedes reemplazarlo si no tienes un Skin
 
-        Label musicLabel = new Label("Volumen Música", skin);
+        Label musicLabel = new Label(LanguageManager.get("Volumen Música"), skin);
         Slider musicSlider = new Slider(0, 1, 0.1f, false, skin);
         musicSlider.setValue(musicVolume);
         musicSlider.addListener(new ChangeListener() {
@@ -59,7 +60,7 @@ public class opcionScreen implements Screen {
             }
         });
 
-        Label soundLabel = new Label("Volumen Sonido", skin);
+        Label soundLabel = new Label(LanguageManager.get("Volumen Efectos de Sonido"), skin);
         Slider soundSlider = new Slider(0, 1, 0.1f, false, skin);
         soundSlider.setValue(soundVolume);
         soundSlider.addListener(new ChangeListener() {
@@ -70,7 +71,7 @@ public class opcionScreen implements Screen {
             }
         });
 
-        TextButton vibrationButton = new TextButton("Vibración: ON", skin);
+        TextButton vibrationButton = new TextButton(LanguageManager.get("Vibracion") + ": ON", skin);
         vibrationButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
@@ -80,13 +81,17 @@ public class opcionScreen implements Screen {
             }
         });
 
-        TextButton backButton = new TextButton("Atrás", skin);
+        TextButton backButton = new TextButton(LanguageManager.get("Atras"), skin);
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 game.setScreen(new MenuScreen(game));
             }
         });
+
+
+
+
         // Ajustar el tamaño de los elementos según la resolución de la pantalla
         float buttonWidth = Gdx.graphics.getWidth() * 0.4f;
         float sliderWidth = Gdx.graphics.getWidth() * 0.6f;
